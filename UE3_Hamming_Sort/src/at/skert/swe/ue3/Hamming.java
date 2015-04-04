@@ -1,6 +1,10 @@
 package at.skert.swe.ue3;
 
 import java.util.ArrayList;
+import java.util.function.IntBinaryOperator;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
+
 
 public class Hamming {
 	final static long two = 2;
@@ -10,18 +14,26 @@ public class Hamming {
 	private long x3 = 3;
 	private long x5 = 5;
 	private ArrayList<Long> hammingNumbers;
-	
+	interface IHammingBreakCondition {
+		boolean CheckIfCurrentValueShouldBeAdded(long currentValue);
+	}
 	public Hamming(){
 		hammingNumbers = new ArrayList<Long>();
 	}
-	public ArrayList<Long> calculateSmoothNumbersBy5(int boundary) {
+	public ArrayList<Long> calculateSmoothNumbersBy5UntilBoundary(int boundary){
+		return calculateSmoothNumbersBy5(nextValue -> nextValue > boundary);
+	}
+	public ArrayList<Long> calculateFixedAmountOfSmoothNumbersBy5(int n){
+		return calculateSmoothNumbersBy5(nextValue -> hammingNumbers.size() > n);
+	}
+	private ArrayList<Long> calculateSmoothNumbersBy5(IHammingBreakCondition breakCondition) {
 
 		hammingNumbers.add((long) 1);
 		int i = 0, j = 0, k = 0;
 		int index = 1;
 		while(true){
 			long minValue = Math.min(x2, Math.min(x3, x5));
-			if(minValue > boundary){
+			if(breakCondition.CheckIfCurrentValueShouldBeAdded(minValue)){
 				break;
 			}
 			hammingNumbers.add(minValue);
