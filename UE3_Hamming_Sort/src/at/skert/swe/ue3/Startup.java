@@ -31,7 +31,16 @@ public class Startup {
 		}
 		System.out.println("\n\n");
 		try {
-			sortTests.AssertCompareHeapAndQuickSort();
+			sortTests.AssertCompareHeapAndQuickSort(1000);
+			System.out.println("\n\n");
+			sortTests.AssertCompareHeapAndQuickSort(10000);
+			System.out.println("\n\n");
+			sortTests.AssertCompareHeapAndQuickSort(100000);
+			System.out.println("\n\n");
+			sortTests.AssertCompareHeapAndQuickSort(1000000);
+			System.out.println("\n\n");
+			sortTests.AssertCompareHeapAndQuickSort(10000000);
+			System.out.println("\n\n");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

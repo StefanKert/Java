@@ -27,12 +27,25 @@ public class SortTests {
 	    }
 		System.out.println("QuickSort Array is sorted correctly.");
 	}
-	public void AssertCompareHeapAndQuickSort() throws Exception{
-		int[] randomArray = Utilities.generateRandomLongArray(100);
+	public void AssertCompareHeapAndQuickSort(int size) throws Exception{
+		int[] randomArray = Utilities.generateRandomLongArray(size);
 		HeapSort heap = new HeapSort();
+		long startTime = System.nanoTime();
 		heap.sort(randomArray);
+		long endTime = System.nanoTime();
+		long heapSortTimeNs = endTime - startTime;
+		long heapSortTimeS = (endTime - startTime) / 1000000000;
 		QuickSort quick = new QuickSort();
+		startTime = System.nanoTime();
 		quick.sort(randomArray);
+		endTime = System.nanoTime();
+		long quickSortTimeNs = endTime - startTime;
+		long quickSortTimeS = (endTime - startTime) / 1000000000;
+		System.out.println(size + " Zahlen");
+		System.out.println("Time (ns): ");
+		System.out.println("QuickSort: " + quickSortTimeNs + " || HeapSort: " + heapSortTimeNs);
+		System.out.println("Time (s): ");
+		System.out.println("QuickSort: " + quickSortTimeS + " || HeapSort: " + heapSortTimeS);
 		System.out.println("SwapCounter: ");
 		System.out.println("QuickSort: " + quick.SwapCounter + " || HeapSort: " + heap.SwapCounter);
 		System.out.println("CompareCounter: ");
