@@ -4,6 +4,8 @@ import at.skert.swe.ue3.utility.Utilities;
 
 public class HeapSort {
     private int total;
+    public int SwapCounter;
+    public int CompareCounter;
     
     public void sort(int[] arr)
     {
@@ -14,6 +16,7 @@ public class HeapSort {
 
         for (int i = total; i > 0; i--) {
             Utilities.swapArrayElements(arr, 0, i);
+        	SwapCounter++;
             total--;
             heapify(arr, 0);
         }
@@ -25,10 +28,17 @@ public class HeapSort {
         int rgt = lft + 1;
         int grt = i;
 
-        if (lft <= total && arr[lft] > arr[grt]) grt = lft;
-        if (rgt <= total && arr[rgt] > arr[grt]) grt = rgt;
+        if (lft <= total && arr[lft] > arr[grt]){
+        	CompareCounter++;
+        	grt = lft;
+        }
+        if (rgt <= total && arr[rgt] > arr[grt]){
+        	CompareCounter++;
+        	grt = rgt;
+        }
         if (grt != i) {
         	Utilities.swapArrayElements(arr, i, grt);
+        	SwapCounter++;
             heapify(arr, grt);
         }
     }
