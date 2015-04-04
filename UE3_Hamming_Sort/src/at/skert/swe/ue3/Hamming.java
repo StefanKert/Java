@@ -14,19 +14,23 @@ public class Hamming {
 	public Hamming(){
 		hammingNumbers = new ArrayList<Long>();
 	}
-	public long calculateSmoothNumber5(int n) {
+	public ArrayList<Long> calculateSmoothNumbersBy5(int boundary) {
 
 		hammingNumbers.add((long) 1);
 		int i = 0, j = 0, k = 0;
 		int index = 1;
-		while(index < n){
-			hammingNumbers.add(getMinimum(x2, x3, x5));
+		while(true){
+			long minValue = Math.min(x2, Math.min(x3, x5));
+			if(minValue > boundary){
+				break;
+			}
+			hammingNumbers.add(minValue);
 			i = SetX2IfNeeded(index, i);
 			j = SetX3IfNeeded(index, j);
 			k = SetX5IfNeeded(index, k);
 			index++;
 		}
-		return hammingNumbers.get(n - 1);
+		return hammingNumbers;
 	}
 	
 	private int SetX2IfNeeded(int index,  int i){
@@ -44,20 +48,5 @@ public class Hamming {
 			x5 = five * hammingNumbers.get(++k);
 		return k;
 	}
-	
-	public ArrayList<Long> calculateSmoothNumber5Range(int n) {
-		ArrayList<Long> numbers = new ArrayList<Long>();
-		long number;
-		int i = 1;
-		while (numbers.size() < n) {
-			number = calculateSmoothNumber5(i);
-			numbers.add(number);
-			i++;
-		}
-		return numbers;
-	}
 
-	private long getMinimum(long x1, long x2, long x3) {
-		return Math.min(x1, Math.min(x2, x3));
-	}
 }
