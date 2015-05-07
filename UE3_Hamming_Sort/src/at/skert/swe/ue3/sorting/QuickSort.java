@@ -1,50 +1,37 @@
 package at.skert.swe.ue3.sorting;
 
-import at.skert.swe.ue3.utility.Utilities;
-
-public class QuickSort {
-	private int[] numbers;
-	private int number;
-    public int SwapCounter;
-    public int CompareCounter;
-    
+public class QuickSort extends IntSortBase {
 	public void sort(int[] values) {
-		if (values == null || values.length == 0) {
+		if (!isSortingNeeded(values)) 
 			return;
-		}
-		numbers = values;
-		number = values.length;
-		quicksort(0, number - 1);
+		quicksort(values, 0, values.length - 1);
 	}
 
-	private void quicksort(int low, int high) {
+	private void quicksort(int[] values, int low, int high) {
 		int i = low, j = high;
-		int pivot = numbers[low + (high - low) / 2];
+		int pivot = values[low + (high - low) / 2]; // Get centered element.
 
-		while (i <= j) {
-			while (numbers[i] < pivot) {
-				CompareCounter++;
+		//arrange elements in array
+		while (lessOrEqual(i, j)) {
+			while (less(values[i], pivot)) {
 				i++;
 			}
-			while (numbers[j] > pivot) {
-				CompareCounter++;
+			while (less(pivot, values[j])) {
 				j--;
 			}
-			if (i <= j) {
-				CompareCounter++;
-				Utilities.swapArrayElements(numbers, i, j);
-				SwapCounter++;
+			if (lessOrEqual(i, j)) {
+				swap(values, i, j);
 				i++;
 				j--;
 			}
 		}
-		if (low < j){
-			CompareCounter++;
-			quicksort(low, j);
+		//recursive call for the left side
+		if (less(low, j)){
+			quicksort(values, low, j);
 		}
-		if (i < high){
-			CompareCounter++;
-			quicksort(i, high);
+		//recursive call for the right side
+		if (less(i, high)){
+			quicksort(values, i, high);
 		}
-	}
+	}	
 }

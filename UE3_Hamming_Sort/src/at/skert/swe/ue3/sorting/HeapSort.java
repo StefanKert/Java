@@ -1,45 +1,43 @@
 package at.skert.swe.ue3.sorting;
 
-import at.skert.swe.ue3.utility.Utilities;
-
-public class HeapSort {
+public class HeapSort extends IntSortBase{
     private int total;
-    public int SwapCounter;
-    public int CompareCounter;
     
-    public void sort(int[] arr)
+    public void sort(int[] values)
     {
-        total = arr.length - 1;
+		if (!isSortingNeeded(values)) 
+			return;
+		
+        total = values.length - 1;
 
+        // Create Binary Tree in Array
         for (int i = total / 2; i >= 0; i--)
-            heapify(arr, i);
+            heapify(values, i);
 
+        // Sink elements in the tree
         for (int i = total; i > 0; i--) {
-            Utilities.swapArrayElements(arr, 0, i);
-        	SwapCounter++;
-            total--;
-            heapify(arr, 0);
+            swap(values, 0, i);
+        	total--;
+            heapify(values, 0);
         }
     }
 
-    private void heapify(int[] arr, int i)
+
+    private void heapify(int[] values, int i)
     {
-        int lft = i * 2;
-        int rgt = lft + 1;
+        int left = i * 2;
+        int right = left + 1;
         int grt = i;
 
-        if (lft <= total && arr[lft] > arr[grt]){
-        	CompareCounter++;
-        	grt = lft;
+        if (lessOrEqual(left, total) && less(values[grt], values[left])){
+        	grt = left;
         }
-        if (rgt <= total && arr[rgt] > arr[grt]){
-        	CompareCounter++;
-        	grt = rgt;
+        if (lessOrEqual(right, total) && less(values[grt], values[right])){
+        	grt = right;
         }
         if (grt != i) {
-        	Utilities.swapArrayElements(arr, i, grt);
-        	SwapCounter++;
-            heapify(arr, grt);
+        	swap(values, i, grt);
+            heapify(values, grt);
         }
     }
 }

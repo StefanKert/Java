@@ -12,3 +12,5 @@
 hs_err_pid*
 UE3_Hamming_Sort/UE2_DOKU.docx
 *.docx
+.metadata/**
+.recommenders/**
