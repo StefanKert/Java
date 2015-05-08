@@ -2,14 +2,14 @@ package at.skert.swe.ue4;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 
-import at.skert.swe.ue4.exception.InvalidBoardIndexException;
-import at.skert.swe.ue4.exception.InvalidTileNumberException;
+import at.skert.swe.ue4.exception.*;
+import at.skert.swe.ue4.implementation.*;
 
 public class BoardTests {
   @Rule
@@ -26,6 +26,12 @@ public class BoardTests {
   @Test
   public void Constructor_ShouldCreateObject() {
     Board board = new Board(4);
+  }
+  
+  @Test
+  public void Constructor_ShouldThrowExceptionForGiven0() {
+    thrown.expect(IllegalArgumentException.class);
+    Board board = new Board(0);
   }
   
   @Test
@@ -159,5 +165,124 @@ public class BoardTests {
     Board board1 = new Board(4);
     Board board2 = new Board(5);
     assertTrue(0 > board1.compareTo(board2));
+  }
+  
+  @Test
+  public void Copy_ShouldReturnEqualBoardButInstanceShouldBeDifferent(){
+    Board board = new Board(4);
+    Board copiedBoard = board.copy();
+    assertTrue(copiedBoard.equals(board));
+    assertFalse(board == copiedBoard);
+  }
+  
+  @Test
+  public void Shuffle_ShouldOrderBoard() throws IllegalMoveException{
+    Board board = new Board(4);
+    Board beforeShuffleBoard = board.copy();
+    board.shuffle();
+    assertFalse(board.equals(beforeShuffleBoard));
+  }
+  
+  @Test
+  public void Move_ShouldMoveEmptyTile() throws IllegalMoveException{
+    Board board = new Board(4);
+    board.move(4, 3);
+    assertEquals(4, board.getEmptyTileRow());
+    assertEquals(3, board.getEmptyTileColumn());
+  }
+  
+  @Test
+  public void Move_ShouldThrowExceptionOnNotAllowedMove() throws IllegalMoveException{
+    thrown.expect(IllegalMoveException.class);
+    Board board = new Board(4);
+    board.move(2, 3);
+  }
+  
+  @Test
+  public void MoveLeft_ShouldMoveEmptyTileToLeft() throws IllegalMoveException{
+    Board board = new Board(4);
+    board.moveLeft();
+    assertEquals(4, board.getEmptyTileRow());
+    assertEquals(3, board.getEmptyTileColumn());
+  }
+  
+  @Test
+  public void MoveLeft_ShouldThrowIllegalMoveExceptionIfTileIsOnTheLeftOuterBound() throws IllegalMoveException, InvalidBoardIndexException, InvalidTileNumberException{
+    thrown.expect(IllegalMoveException.class);
+    Board board = new Board(4);
+    board.setTile(1, 1, 0);
+    board.moveLeft();
+  }
+  
+  @Test
+  public void MoveRight_ShouldMoveEmptyTileToRight() throws IllegalMoveException, InvalidBoardIndexException, InvalidTileNumberException{
+    Board board = new Board(4);
+    board.setTile(1, 1, 0);
+    board.moveRight();
+    assertEquals(1, board.getEmptyTileRow());
+    assertEquals(2, board.getEmptyTileColumn());
+  }
+  
+  @Test
+  public void MoveRight_ShouldThrowIllegalMoveExceptionIfTileIsOnTheRightOuterBound() throws IllegalMoveException, InvalidBoardIndexException, InvalidTileNumberException{
+    thrown.expect(IllegalMoveException.class);
+    Board board = new Board(4);
+    board.moveRight();
+  }
+
+  @Test
+  public void MoveUp_ShouldMoveEmptyTileUp() throws IllegalMoveException{
+    Board board = new Board(4);
+    board.moveUp();
+    assertEquals(3, board.getEmptyTileRow());
+    assertEquals(4, board.getEmptyTileColumn());
+  }
+  
+  @Test
+  public void MoveUp_ShouldThrowIllegalMoveExceptionIfTileIsOnTheUpperOuterBound() throws IllegalMoveException, InvalidBoardIndexException, InvalidTileNumberException{
+    thrown.expect(IllegalMoveException.class);
+    Board board = new Board(4);
+    board.setTile(1, 1, 0);
+    board.moveUp();
+  }
+  
+  @Test
+  public void MoveDown_ShouldMoveEmptyTileDown() throws IllegalMoveException, InvalidBoardIndexException, InvalidTileNumberException{
+    Board board = new Board(4);
+    board.setTile(1, 1, 0);
+    board.moveDown();
+    assertEquals(2, board.getEmptyTileRow());
+    assertEquals(1, board.getEmptyTileColumn());
+  }
+  
+  @Test
+  public void MoveDown_ShouldThrowIllegalMoveExceptionIfTileIsOnTheLowerOuterBound() throws IllegalMoveException, InvalidBoardIndexException, InvalidTileNumberException{
+    thrown.expect(IllegalMoveException.class);
+    Board board = new Board(4);
+    board.moveDown();
+  }
+
+  @Test
+  public void MakeMoves_ShouldMoveTile() throws IllegalMoveException{
+    Board board = new Board(4);
+    List<Move> moves = new ArrayList<Move>();
+    moves.add(Move.Up);
+    moves.add(Move.Up);
+    moves.add(Move.Down);
+    moves.add(Move.Left);
+    moves.add(Move.Left);
+    moves.add(Move.Right);
+    board.makeMoves(moves);
+    assertEquals(3, board.getEmptyTileColumn());
+    assertEquals(3, board.getEmptyTileRow());
+  }
+
+  @Test
+  public void MakeMoves_ShouldThrowExceptionOnIllegalMove() throws IllegalMoveException{
+    thrown.expect(IllegalMoveException.class);
+    Board board = new Board(4);
+    List<Move> moves = new ArrayList<Move>();
+    moves.add(Move.Down);
+    board.makeMoves(moves);
   }
 }
