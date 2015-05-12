@@ -6,7 +6,7 @@ import java.util.Random;
 
 import at.skert.swe.ue4.exception.*;
 
-public class Board {
+public class Board implements Comparable<Board> {
   private int size;
   private int board[][];
   private int emptyTileRow;
@@ -42,9 +42,10 @@ public class Board {
   }
 
   public int size() {
-    return this.size;
+    return size;
   }
 
+  @Override
   public boolean equals(Object other) {
     Board otherBoard = (other instanceof Board) ? (Board) other : null;
     if (otherBoard == null)
@@ -63,6 +64,7 @@ public class Board {
     return true;
   }
 
+  @Override
   public int compareTo(Board other) {
     return this.size() - other.size();
   }
@@ -79,7 +81,6 @@ public class Board {
         mustContain.remove(mustContain.indexOf(board[i][j]));
       }
     }
-
     return mustContain.isEmpty();
   }
 
@@ -100,6 +101,20 @@ public class Board {
     } else {
       board[row - 1][column - 1] = number;
     }
+  }
+
+  public Point getTilePointByNumber(int number)
+      throws InvalidTileNumberException {
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+        // Ignore 0 tile
+        if (board[i][j] == number)
+          return new Point(i + 1, j + 1); // We need to add 1 because our board
+                                          // is 1 based configuration
+      }
+    }
+    // If we reach this point the Tile Number doesn´t exist in our board
+    throw new InvalidTileNumberException();
   }
 
   public void setEmptyTile(int row, int column)
@@ -173,7 +188,7 @@ public class Board {
       move(move);
     }
   }
-  
+
   private boolean areBoardValuesValid(int row, int column) {
     if (row < 1 || row > size || column < 1 || column > size)
       return false;
@@ -186,7 +201,7 @@ public class Board {
     return true;
   }
 
-  private boolean isMoveValid(int row, int column) {
+  public boolean isMoveValid(int row, int column) {
     if (!areBoardValuesValid(row, column))
       return false;
     if ((Math.abs(column - emptyTileColumn) == 1 && row == emptyTileRow)
@@ -195,7 +210,7 @@ public class Board {
     return false;
   }
 
-  private boolean isMoveValid(Move move) {
+  public boolean isMoveValid(Move move) {
     int targetRow = getTargetRowForMove(move);
     int targetColumn = getTargetColumnForMove(move);
     return isMoveValid(targetRow, targetColumn);
@@ -219,7 +234,28 @@ public class Board {
       return emptyTileColumn;
   }
 
-  private void move(Move move) throws IllegalMoveException {
+  public void move(Move move) throws IllegalMoveException {
     move(getTargetRowForMove(move), getTargetColumnForMove(move));
+  }
+
+  public int getManhattenDistanceForBoard() throws InvalidTileNumberException,
+      InvalidBoardIndexException {
+    int costs = 0;
+
+    Board goalBoard = BoardFactory.GetGoalBoard(this.size);
+
+    // Iterate over all tiles and calculate their manhatten distances
+    for (int row = 1; row <= size; row++) {
+      for (int column = 1; column <= size; column++) {
+        // Ignore 0 tile
+        int number = getTile(row, column);
+        if (number != 0) {
+          Point goal = goalBoard.getTilePointByNumber(number);
+          costs += Math.abs(row - goal.getRow())
+              + Math.abs(column - goal.getColumn());
+        }
+      }
+    }
+    return costs;
   }
 }
