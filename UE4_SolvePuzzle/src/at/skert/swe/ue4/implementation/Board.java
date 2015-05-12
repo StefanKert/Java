@@ -7,6 +7,7 @@ import java.util.Random;
 import at.skert.swe.ue4.exception.*;
 
 public class Board implements Comparable<Board> {
+  private static final int SHUFFLE_COUNT = 100;
   private int size;
   private int board[][];
   private int emptyTileRow;
@@ -70,18 +71,18 @@ public class Board implements Comparable<Board> {
   }
 
   public boolean isValid() {
-    ArrayList<Integer> mustContain = new ArrayList<Integer>();
+    ArrayList<Integer> boardTiles = new ArrayList<Integer>();
     for (int i = 0; i < size * size; i++) {
-      mustContain.add(i);
+      boardTiles.add(i);
     }
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {
-        if (!mustContain.contains(board[i][j]))
+        if (!boardTiles.contains(board[i][j]))
           return false;
-        mustContain.remove(mustContain.indexOf(board[i][j]));
+        boardTiles.remove(boardTiles.indexOf(board[i][j]));
       }
     }
-    return mustContain.isEmpty();
+    return boardTiles.isEmpty();
   }
 
   public int getTile(int row, int column) throws InvalidBoardIndexException {
@@ -103,13 +104,13 @@ public class Board implements Comparable<Board> {
     }
   }
 
-  public Point getTilePointByNumber(int number)
+  public Position getTilePositionByNumber(int number)
       throws InvalidTileNumberException {
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {
         // Ignore 0 tile
         if (board[i][j] == number)
-          return new Point(i + 1, j + 1); // We need to add 1 because our board
+          return new Position(i + 1, j + 1); // We need to add 1 because our board
                                           // is 1 based configuration
       }
     }
@@ -130,20 +131,18 @@ public class Board implements Comparable<Board> {
     Board b = new Board(this.size);
     b.emptyTileColumn = this.emptyTileColumn;
     b.emptyTileRow = this.emptyTileRow;
-
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {
         b.board[i][j] = this.board[i][j];
       }
     }
-
     return b;
   }
 
   public void shuffle() throws IllegalMoveException {
     Move move;
     Random random = new Random();
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i <= SHUFFLE_COUNT; i++) {
       do {
         move = Move.values()[random.nextInt(3)];
       } while (!isMoveValid(move));
@@ -238,8 +237,7 @@ public class Board implements Comparable<Board> {
     move(getTargetRowForMove(move), getTargetColumnForMove(move));
   }
 
-  public int getManhattenDistanceForBoard() throws InvalidTileNumberException,
-      InvalidBoardIndexException {
+  public int getManhattenDistanceForBoard() throws InvalidTileNumberException, InvalidBoardIndexException {
     int costs = 0;
 
     Board goalBoard = BoardFactory.GetGoalBoard(this.size);
@@ -250,7 +248,7 @@ public class Board implements Comparable<Board> {
         // Ignore 0 tile
         int number = getTile(row, column);
         if (number != 0) {
-          Point goal = goalBoard.getTilePointByNumber(number);
+          Position goal = goalBoard.getTilePositionByNumber(number);
           costs += Math.abs(row - goal.getRow())
               + Math.abs(column - goal.getColumn());
         }

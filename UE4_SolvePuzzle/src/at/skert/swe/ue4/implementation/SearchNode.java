@@ -1,12 +1,8 @@
 package at.skert.swe.ue4.implementation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import java.util.*;
 import at.skert.swe.ue4.implementation.Move;
-import at.skert.swe.ue4.exception.BoardException;
-import at.skert.swe.ue4.exception.IllegalMoveException;
+import at.skert.swe.ue4.exception.*;
 
 public class SearchNode implements Comparable<SearchNode> {
   private Board board;
@@ -88,7 +84,7 @@ public class SearchNode implements Comparable<SearchNode> {
     return moves;
   }
 
-  public List<SearchNode> getSuccessors() {
+  public List<SearchNode> getPossibleNodes() {
     ArrayList<SearchNode> nodes = new ArrayList<SearchNode>();
     addSearchNodesForValidMoves(nodes, Move.Up);
     addSearchNodesForValidMoves(nodes, Move.Down);
@@ -97,7 +93,7 @@ public class SearchNode implements Comparable<SearchNode> {
     return nodes;
   }
 
-  public void addSearchNodesForValidMoves(List<SearchNode> nodes, Move move) {
+  private void addSearchNodesForValidMoves(List<SearchNode> nodes, Move move) {
     try {
       if (board.isMoveValid(move)) {
         Board newBoard = board.copy();

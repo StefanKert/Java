@@ -1,9 +1,9 @@
 package at.skert.swe.ue4.implementation;
 
-public class Point {
+public class Position {
   private int row, column;
 
-  public Point(int row, int column) {
+  public Position(int row, int column) {
       this.row = row;
       this.column = column;
   }

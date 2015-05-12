@@ -184,6 +184,29 @@ public class SearchNodeTests {
   }
   
   @Test
+  public void getPossibleNodes_ShouldReturnUpAndLeft(){
+    Board goalBoard = BoardFactory.GetGoalBoard(4);
+    SearchNode node = new SearchNode(goalBoard);
+    List<SearchNode> possibleNodes = node.getPossibleNodes();
+    assertEquals(2, possibleNodes.size());
+    assertEquals(Move.Up, possibleNodes.get(0).getMove());
+    assertEquals(Move.Left, possibleNodes.get(1).getMove());
+  }
+  
+  @Test
+  public void getPossibleNodes_ShouldReturnAllMoves() throws InvalidBoardIndexException{
+    Board goalBoard = BoardFactory.GetGoalBoard(4);
+    goalBoard.setEmptyTile(2, 2);
+    SearchNode node = new SearchNode(goalBoard);
+    List<SearchNode> possibleNodes = node.getPossibleNodes();
+    assertEquals(4, possibleNodes.size());
+    assertEquals(Move.Up, possibleNodes.get(0).getMove());
+    assertEquals(Move.Down, possibleNodes.get(1).getMove());
+    assertEquals(Move.Left, possibleNodes.get(2).getMove());
+    assertEquals(Move.Right, possibleNodes.get(3).getMove());
+  }
+  
+  @Test
   public void simpleNodeTest() {
     try {
       Board board = new Board(3);      

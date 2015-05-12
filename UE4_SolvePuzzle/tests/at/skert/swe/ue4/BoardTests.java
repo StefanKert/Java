@@ -178,6 +178,21 @@ public class BoardTests {
   }
   
   @Test
+  public void move_withEnum_ShouldMoveEmptyTile() throws IllegalMoveException{
+    Board board = new Board(4);
+    board.move(Move.Left);
+    assertEquals(4, board.getEmptyTileRow());
+    assertEquals(3, board.getEmptyTileColumn());
+  }
+  
+  @Test
+  public void move_withEnum_ShouldThrowExceptionOnNotAllowedMove() throws IllegalMoveException{
+    thrown.expect(IllegalMoveException.class);
+    Board board = new Board(4);
+    board.move(Move.Down);
+  }
+  
+  @Test
   public void move_ShouldMoveEmptyTile() throws IllegalMoveException{
     Board board = new Board(4);
     board.move(4, 3);
@@ -281,19 +296,19 @@ public class BoardTests {
   }
   
   @Test
-  public void getTilePointByNumber_ShouldReturn_Point() throws InvalidBoardIndexException, InvalidTileNumberException{
+  public void getTilePositionByNumber_ShouldReturn_Position() throws InvalidBoardIndexException, InvalidTileNumberException{
     Board board = new Board(4);
     board.setTile(1, 1, 5);
-    Point point = board.getTilePointByNumber(5);
-    assertEquals(1, point.getRow());
-    assertEquals(1, point.getColumn());
+    Position position = board.getTilePositionByNumber(5);
+    assertEquals(1, position.getRow());
+    assertEquals(1, position.getColumn());
   }
   
   @Test
-  public void getTilePointByNumber_ShouldThrowExceptionOnNotAvailabelNumber() throws InvalidBoardIndexException, InvalidTileNumberException{
+  public void getTilePositionByNumber_ShouldThrowExceptionOnNotAvailabeNumber() throws InvalidBoardIndexException, InvalidTileNumberException{
     thrown.expect(InvalidTileNumberException.class);
     Board board = new Board(4);
-    board.getTilePointByNumber(100);
+    board.getTilePositionByNumber(100);
   }
   
   @Test
