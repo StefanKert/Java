@@ -21,7 +21,7 @@ public class SlidingPuzzleSolverTest {
   public void solveSimplePuzzleTest1() throws InvalidBoardIndexException, InvalidTileNumberException {
     try {
       SlidingPuzzle solver = new SlidingPuzzle();
-      Board board = new Board(3);      
+      Board board = Board.CreateGoalBoard(3);      
       board.setTile(1, 1, 1);
       board.setTile(1, 2, 2);
       board.setTile(1, 3, 3);
@@ -46,7 +46,7 @@ public class SlidingPuzzleSolverTest {
   public void solveSimplePuzzleTest2() throws InvalidBoardIndexException, InvalidTileNumberException {
     try {
       SlidingPuzzle solver = new SlidingPuzzle();
-      Board board = new Board(3);      
+      Board board = Board.CreateGoalBoard(3);      
       board.setTile(1, 1, 1);
       board.setTile(1, 2, 2);
       board.setTile(1, 3, 3);
@@ -76,7 +76,7 @@ public class SlidingPuzzleSolverTest {
       //  8  2  7 
       //  1  4  6 
       //  3  5  X 
-      Board board = new Board(3);      
+      Board board = Board.CreateGoalBoard(3);      
       board.setTile(1, 1, 8);
       board.setTile(1, 2, 2);
       board.setTile(1, 3, 7);
@@ -89,7 +89,7 @@ public class SlidingPuzzleSolverTest {
     
       List<Move> moves = solver.solve(board);
       board.makeMoves(moves);
-      assertEquals(new Board(3), board);
+      assertEquals(Board.CreateGoalBoard(3), board);
     }
     catch (NoSolutionException nse) {
       fail("NoSolutionException is not expected.");
@@ -102,7 +102,7 @@ public class SlidingPuzzleSolverTest {
 
     for (int k = 0; k < 50; k++) {
       try {
-        Board board = new Board(3);
+        Board board = Board.CreateGoalBoard(3);
         int n = 1;
         int maxN = board.size() * board.size();
         for (int i = 1; i <= board.size(); i++)
@@ -113,7 +113,7 @@ public class SlidingPuzzleSolverTest {
                 
         List<Move> moves = solver.solve(board);
         board.makeMoves(moves);
-        assertEquals(new Board(3), board);
+        assertEquals(Board.CreateGoalBoard(3), board);
       }
       catch (NoSolutionException nse) {
         fail("NoSolutionException is not expected.");
@@ -125,7 +125,7 @@ public class SlidingPuzzleSolverTest {
   public void solveSimplePuzzleTest_4x4() throws IllegalMoveException {
     try {
       SlidingPuzzle solver = new SlidingPuzzle();
-      Board board = new Board(4);      
+      Board board = Board.CreateGoalBoard(4);      
 
       board.moveLeft();
       
@@ -142,7 +142,7 @@ public class SlidingPuzzleSolverTest {
   public void solveComplexPuzzleTest_4x4() throws IllegalMoveException {
     try {
       SlidingPuzzle solver = new SlidingPuzzle();
-      Board board = new Board(4);      
+      Board board = Board.CreateGoalBoard(4);      
 
       board.moveLeft();
       board.moveLeft();
@@ -156,7 +156,7 @@ public class SlidingPuzzleSolverTest {
       
       List<Move> moves = solver.solve(board);
       board.makeMoves(moves);
-      assertEquals(new Board(4), board);
+      assertEquals(Board.CreateGoalBoard(4), board);
     }
     catch (NoSolutionException nse) {
       fail("NoSolutionException is not expected.");

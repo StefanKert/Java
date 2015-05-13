@@ -12,7 +12,7 @@ public class SearchNode implements Comparable<SearchNode> {
 
   public SearchNode(Board board) {
     if (board == null)
-      throw new IllegalArgumentException("The board mustn´t be null.");
+      throw new IllegalArgumentException("The board must not be null.");
     this.board = board;
   }
 

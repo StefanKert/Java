@@ -1,9 +1,6 @@
 package at.skert.swe.ue4.implementation;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
+import java.util.*;
 import at.skert.swe.ue4.exception.*;
 
 public class Board implements Comparable<Board> {
@@ -13,13 +10,26 @@ public class Board implements Comparable<Board> {
   private int emptyTileRow;
   private int emptyTileColumn;
 
-  public Board(int size) {
+  //Factory method for getting finished Board. All the tiles are at the goal position.
+  public static Board CreateGoalBoard(int size) {
+    Board board = new Board(size);
+    board.setBoardFinished();
+    return board;
+  }
+  //Factory method for getting empty board. This method returns a Board with no Tiles set
+  public static Board CreateEmptyBoard(int size) {
+    return new Board(size);
+  }
+ 
+  private Board(int size) {
     if (size == 0)
       throw new IllegalArgumentException("You need to pass a value > 0.");
 
     this.size = size;
     this.board = new int[size][size];
-
+  }
+  
+  private void setBoardFinished(){
     int count = 1;
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {
@@ -52,9 +62,10 @@ public class Board implements Comparable<Board> {
     if (otherBoard == null)
       return false;
 
-    if (this.compareTo(otherBoard) != 0)
+    if (this.compareTo(otherBoard) != 0) 
       return false;
 
+    //Perform check for each element in the boards for equality
     for (int i = 0; i < this.size; i++) {
       for (int j = 0; j < this.size; j++) {
         if (this.board[i][j] != otherBoard.board[i][j])
@@ -72,9 +83,10 @@ public class Board implements Comparable<Board> {
 
   public boolean isValid() {
     ArrayList<Integer> boardTiles = new ArrayList<Integer>();
-    for (int i = 0; i < size * size; i++) {
+    for (int i = 0; i < size * size; i++) { // generates the valid entries for the board
       boardTiles.add(i);
     }
+    // We check if the element exists in the board. If yes we remove it and if there are no more Elements the board is valid
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {
         if (!boardTiles.contains(board[i][j]))
@@ -114,7 +126,7 @@ public class Board implements Comparable<Board> {
                                           // is 1 based configuration
       }
     }
-    // If we reach this point the Tile Number doesn´t exist in our board
+    // If we reach this point the Tile Number does not exist in our board
     throw new InvalidTileNumberException();
   }
 
@@ -122,7 +134,7 @@ public class Board implements Comparable<Board> {
       throws InvalidBoardIndexException {
     if (!areBoardValuesValid(row, column))
       throw new InvalidBoardIndexException();
-    board[row - 1][column - 1] = 0;
+    board[row - 1][column - 1] = 0; // We need to substract 1 because we get the row and the column 1 based and our array is zero based
     emptyTileRow = row;
     emptyTileColumn = column;
   }
@@ -141,22 +153,18 @@ public class Board implements Comparable<Board> {
 
   public void shuffle() throws IllegalMoveException {
     Move move;
-    Random random = new Random();
-    for (int i = 0; i <= SHUFFLE_COUNT; i++) {
+    for (int i = 0; i < SHUFFLE_COUNT; i++) {
       do {
-        move = Move.values()[random.nextInt(3)];
+        move = Move.getRandomMove();
       } while (!isMoveValid(move));
       move(move);
     }
   }
 
+  // This method is just a wrapper for the tryMove method to get rid of those try-catch things to concentrate on the logic
   public void move(int row, int column) throws IllegalMoveException {
     try {
-      if (!isMoveValid(row, column))
-        throw new IllegalMoveException("The move to row " + row
-            + " and to column " + column + " was not a valid move.");
-      setTile(emptyTileRow, emptyTileColumn, getTile(row, column));
-      setEmptyTile(row, column);
+      tryMove(row, column);
     } catch (InvalidBoardIndexException invalidBoardIndexException) {
       throw new IllegalMoveException("Move was out of Board index Range.",
           invalidBoardIndexException);
@@ -164,6 +172,14 @@ public class Board implements Comparable<Board> {
       throw new IllegalMoveException("The tile contains a invalid number.",
           invalidTileNumberException);
     }
+  }
+  
+  // This method contains the logic for the move Method. 
+  private void tryMove(int row, int column) throws IllegalMoveException, InvalidBoardIndexException, InvalidTileNumberException {
+    if (!isMoveValid(row, column))
+      throw new IllegalMoveException("The move to row " + row + " and to column " + column + " was not a valid move.");
+    setTile(emptyTileRow, emptyTileColumn, getTile(row, column));
+    setEmptyTile(row, column);
   }
 
   public void moveLeft() throws IllegalMoveException {
@@ -203,8 +219,10 @@ public class Board implements Comparable<Board> {
   public boolean isMoveValid(int row, int column) {
     if (!areBoardValuesValid(row, column))
       return false;
-    if ((Math.abs(column - emptyTileColumn) == 1 && row == emptyTileRow)
-        || (Math.abs(row - emptyTileRow) == 1 && column == emptyTileColumn))
+    
+    boolean isHorizontalMoveAllowed = Math.abs(column - emptyTileColumn) == 1 && row == emptyTileRow;
+    boolean isVerticalMoveAllowed = Math.abs(row - emptyTileRow) == 1 && column == emptyTileColumn;
+    if (isHorizontalMoveAllowed || isVerticalMoveAllowed)
       return true;
     return false;
   }
@@ -221,7 +239,7 @@ public class Board implements Comparable<Board> {
     else if (move == Move.Up)
       return emptyTileRow - 1;
     else
-      return emptyTileRow;
+      return emptyTileRow; // We can return the row if a other move is applied because when we Move left or right the row is not changed
   }
 
   private int getTargetColumnForMove(Move move) {
@@ -230,9 +248,9 @@ public class Board implements Comparable<Board> {
     else if (move == Move.Right)
       return emptyTileColumn + 1;
     else
-      return emptyTileColumn;
+      return emptyTileColumn; // We can return the column if a other move is applied because when we Move up or down the column is not changed
   }
-
+  
   public void move(Move move) throws IllegalMoveException {
     move(getTargetRowForMove(move), getTargetColumnForMove(move));
   }
@@ -240,20 +258,29 @@ public class Board implements Comparable<Board> {
   public int getManhattenDistanceForBoard() throws InvalidTileNumberException, InvalidBoardIndexException {
     int costs = 0;
 
-    Board goalBoard = BoardFactory.GetGoalBoard(this.size);
-
-    // Iterate over all tiles and calculate their manhatten distances
-    for (int row = 1; row <= size; row++) {
+    Board goalBoard = Board.CreateGoalBoard(this.size);
+    for (int row = 1; row <= size; row++) { // We need to start with 1 because we use the getTile Method that is 1 based
       for (int column = 1; column <= size; column++) {
-        // Ignore 0 tile
         int number = getTile(row, column);
-        if (number != 0) {
+        if (number != 0) { // If number is 0 we do not need to calculate the costs
           Position goal = goalBoard.getTilePositionByNumber(number);
-          costs += Math.abs(row - goal.getRow())
-              + Math.abs(column - goal.getColumn());
+          costs += Math.abs(row - goal.getRow()) + Math.abs(column - goal.getColumn()); // Add difference to goal Position to costs
         }
       }
     }
     return costs;
+  }
+  
+  @Override
+  public String toString(){
+    StringBuilder builder = new StringBuilder();
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+          builder.append(board[i][j]);
+          builder.append(" ");
+      }
+      builder.append("\n");
+    }
+    return builder.toString(); 
   }
 }
