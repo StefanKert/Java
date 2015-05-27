@@ -6,7 +6,6 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 
 import org.junit.Test;
-
 import at.skert.swe.ue5.interfaces.SortedSet;
 import at.skert.swe.ue5.interfaces.SortedTreeSet;
 import static org.junit.Assert.*;
@@ -14,9 +13,16 @@ import static org.junit.Assert.*;
 public abstract class SortedTreeSetTestBase {
 
 	protected abstract <T> SortedTreeSet<T> createSet(Comparator<T> comparator);
-
+	protected abstract <T> SortedTreeSet<T> callDefaultCtor();
+	
 	protected <T> SortedTreeSet<T> createSet() {
 		return createSet(null);
+	}
+	
+	@Test
+	public void comparatorShouldBeNullForDefaultCtor(){
+		SortedTreeSet<Integer> set = callDefaultCtor();
+		assertEquals(null, set.comparator());
 	}
 
 	@Test
@@ -69,10 +75,8 @@ public abstract class SortedTreeSetTestBase {
 		SortedSet<Integer> set = createSet();
 		for (int i = 0; i < NELEMS; i++)
 			set.add(i);
-
 		for (int i = 0; i < NELEMS; i++)
 			assertTrue(set.contains(i));
-
 		for (int i = NELEMS; i < NELEMS + 100; i++)
 			assertFalse(set.contains(i));
 	}
@@ -82,14 +86,11 @@ public abstract class SortedTreeSetTestBase {
 		final int NELEMS = 100000;
 		Random rand = new Random();
 		SortedSet<Integer> set = createSet();
-
 		int[] numbers = new int[NELEMS];
 		for (int i = 0; i < numbers.length; i++)
 			numbers[i] = rand.nextInt();
-
 		for (int i = 0; i < NELEMS; i++)
 			set.add(numbers[i]);
-
 		for (int i = 0; i < NELEMS; i++)
 			assertTrue(set.contains(numbers[i]));
 	}
@@ -99,90 +100,68 @@ public abstract class SortedTreeSetTestBase {
 		final int NELEMS = 1000;
 		Random rand = new Random();
 		SortedSet<Integer> set = createSet();
-
 		for (int i = 1; i <= NELEMS; i++) {
 			set.add(rand.nextInt());
 			assertTrue(isSorted(set));
 			assertEquals(i, set.size());
 		}
 	}
-
+	
 	@Test
 	public void testAddMultipleSimple() {
 		SortedSet<Integer> set = createSet();
-
 		assertTrue(set.add(10));
 		assertTrue(set.add(15));
-
 		assertFalse(set.add(10));
 		assertFalse(set.add(15));
-
 		assertTrue(set.add(5));
 		assertFalse(set.add(5));
-
 		assertEquals(3, set.size());
 	}
 
 	@Test
 	public void testAddMultiple() {
 		final int NELEMS = 1000;
-
 		SortedSet<Integer> set = createSet();
 		for (int i = 0; i < NELEMS; i++)
 			assertTrue(set.add(i));
-
 		int size = set.size();
-
 		for (int i = 0; i < NELEMS; i++)
 			assertFalse(set.add(i));
-
 		assertEquals(size, set.size());
 	}
 
 	@Test
 	public void testAddMultipleStrings() {
 		final int NELEMS = 1000;
-
 		SortedSet<String> set = createSet();
 		for (int i = 0; i < NELEMS; i++)
 			assertTrue(set.add(new Integer(i).toString()));
-
 		int size = set.size();
-
 		for (int i = 0; i < NELEMS; i++)
 			assertFalse(set.add(new Integer(i).toString()));
-
 		assertEquals(size, set.size());
 	}
 
 	@Test
 	public void testAddMultipleComplexObjects() {
 		final int NELEMS = 1000;
-
-		Comparator<ComplexTestObject> comparator = (firstValue, secondValue) -> {
-			return new Integer(firstValue.getNumber()).compareTo(secondValue.getNumber());
-		};
-		
-		SortedSet<ComplexTestObject> set = createSet(comparator);
+		SortedSet<ComplexTestObject> set = createSet(getComplexTestObjectComparator());
 		for (int i = 0; i < NELEMS; i++) {
 			ComplexTestObject obj = new ComplexTestObject(i);
 			assertTrue(set.add(obj));
 		}
-
 		int size = set.size();
-
 		for (int i = 0; i < NELEMS; i++) {
 			ComplexTestObject obj = new ComplexTestObject(i);
 			assertFalse(set.add(obj));
 		}
-
 		assertEquals(size, set.size());
 	}
 
 	@Test
 	public void testGetSimple() {
 		SortedSet<Integer> set = createSet();
-
 		assertNull(set.get(5));
 		set.add(5);
 		assertEquals(5, set.get(5).intValue());
@@ -192,7 +171,6 @@ public abstract class SortedTreeSetTestBase {
 	@Test
 	public void testGetString() {
 		SortedSet<String> set = createSet();
-
 		assertNull(set.get("Test"));
 		set.add("Test");
 		assertEquals("Test", set.get("Test"));
@@ -201,13 +179,8 @@ public abstract class SortedTreeSetTestBase {
 	
 	@Test
 	public void testGetComplexObject() {
-		Comparator<ComplexTestObject> comparator = (firstValue, secondValue) -> {
-			return new Integer(firstValue.getNumber()).compareTo(secondValue.getNumber());
-		};
-		
-		ComplexTestObject objToInsert = new ComplexTestObject(5);
-		
-		SortedSet<ComplexTestObject> set = createSet(comparator);
+		ComplexTestObject objToInsert = new ComplexTestObject(5);	
+		SortedSet<ComplexTestObject> set = createSet(getComplexTestObjectComparator());
 		assertNull(set.get(objToInsert));
 		set.add(objToInsert);
 		assertEquals(objToInsert.getNumber(), set.get(objToInsert).getNumber());
@@ -217,11 +190,9 @@ public abstract class SortedTreeSetTestBase {
 	@Test
 	public void testGet() {
 		final int NELEMS = 1000;
-
 		SortedSet<Integer> set = createSet();
 		for (int i = 0; i < NELEMS; i++)
 			set.add(i);
-
 		for (int i = 0; i < NELEMS; i++)
 			assertEquals(i, set.get(i).intValue());
 	}
@@ -232,25 +203,50 @@ public abstract class SortedTreeSetTestBase {
 		set.add(3);
 		set.add(1);
 		set.add(5);
-
 		assertTrue(set.contains(1));
 		assertTrue(set.contains(3));
 		assertTrue(set.contains(5));
-
 		assertFalse(set.contains(0));
 		assertFalse(set.contains(2));
 		assertFalse(set.contains(4));
 		assertFalse(set.contains(6));
 	}
+	
+	@Test
+	public void testContainsWithString() {
+		SortedSet<String> set = createSet();
+		set.add("Test1");
+		set.add("Test2");
+		set.add("Test3");
+		assertTrue(set.contains("Test1"));
+		assertTrue(set.contains("Test2"));
+		assertTrue(set.contains("Test3"));
+		assertFalse(set.contains("Test0"));
+		assertFalse(set.contains("Test4"));
+		assertFalse(set.contains("Test7"));
+	}
+	
+	
+	@Test
+	public void testContainsWithComplexObject() {
+		SortedSet<ComplexTestObject> set = createSet(getComplexTestObjectComparator());
+		set.add(new ComplexTestObject(1));
+		set.add(new ComplexTestObject(2));
+		set.add(new ComplexTestObject(3));	
+		assertTrue(set.contains(new ComplexTestObject(1)));
+		assertTrue(set.contains(new ComplexTestObject(2)));
+		assertTrue(set.contains(new ComplexTestObject(3)));	
+		assertFalse(set.contains(new ComplexTestObject(0)));
+		assertFalse(set.contains(new ComplexTestObject(4)));
+		assertFalse(set.contains(new ComplexTestObject(7)));
+	}
 
 	@Test
 	public void testContains() {
 		final int NELEMS = 1000;
-
 		SortedSet<Integer> set = createSet();
 		for (int i = 0; i < NELEMS; i++)
 			set.add(i);
-
 		for (int i = 0; i < NELEMS; i++)
 			assertTrue(set.contains(i));
 	}
@@ -261,18 +257,13 @@ public abstract class SortedTreeSetTestBase {
 		set.add(10);
 		set.add(5);
 		set.add(15);
-
 		Iterator<Integer> it = set.iterator();
-
 		assertTrue(it.hasNext());
 		assertEquals(new Integer(5), it.next());
-
 		assertTrue(it.hasNext());
 		assertEquals(new Integer(10), it.next());
-
 		assertTrue(it.hasNext());
 		assertEquals(new Integer(15), it.next());
-
 		assertFalse(it.hasNext());
 	}
 
@@ -280,14 +271,11 @@ public abstract class SortedTreeSetTestBase {
 	public void testIterator() {
 		final int NELEMS = 10000;
 		SortedSet<Integer> set = createSet();
-
 		for (int i = 1; i <= NELEMS; i++)
 			set.add(i);
-
 		Iterator<Integer> it = set.iterator();
 		int prev = it.next();
 		assertEquals(1, prev);
-
 		while (it.hasNext()) {
 			int curr = it.next();
 			assertTrue(prev + 1 == curr);
@@ -298,19 +286,12 @@ public abstract class SortedTreeSetTestBase {
 	@Test
 	public void testIteratorWithComplexObject() {
 		final int NELEMS = 10000;
-		Comparator<ComplexTestObject> comparator = (firstValue, secondValue) -> {
-			return new Integer(firstValue.getNumber()).compareTo(secondValue.getNumber());
-		};
-		
-		SortedSet<ComplexTestObject> set = createSet(comparator);
-
+		SortedSet<ComplexTestObject> set = createSet(getComplexTestObjectComparator());
 		for (int i = 1; i <= NELEMS; i++)
 			set.add(new ComplexTestObject(i));
-
 		Iterator<ComplexTestObject> it = set.iterator();
 		int prev = it.next().getNumber();
 		assertEquals(1, prev);
-
 		while (it.hasNext()) {
 			int curr =  it.next().getNumber();
 			assertTrue(prev + 1 == curr);
@@ -424,4 +405,10 @@ public abstract class SortedTreeSetTestBase {
 		return true;
 	}
 
+	protected Comparator<ComplexTestObject>  getComplexTestObjectComparator(){
+		Comparator<ComplexTestObject> comparator = (firstValue, secondValue) -> {
+			return new Integer(firstValue.getNumber()).compareTo(secondValue.getNumber());
+		};
+		return comparator;
+	}
 }

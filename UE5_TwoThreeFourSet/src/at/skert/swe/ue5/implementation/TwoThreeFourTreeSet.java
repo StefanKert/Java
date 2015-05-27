@@ -47,20 +47,17 @@ public class TwoThreeFourTreeSet<T> implements SortedTreeSet<T> {
 			return node == node.getParent().getLastChildNode();
 		}
 		
-
 		@Override
 		public T next() {
 			if (!hasNext())
 				throw new NoSuchElementException();
-			
 			if(areFurtherChildrenAvailableForCurrentNode()) {
 				currentNode = currentNode.getChild(currentIndex);
 				while (currentNode.hasChildren()) {
 					currentNode = currentNode.getFirstChildNode();				
 				}
 				currentIndex = 0;
-			}
-			
+			}		
 			while(isCurrentIndexLastElementInNode()) {
 				currentIndex = currentNode.getPositionInParent();
 				currentNode = currentNode.getParent();
@@ -224,22 +221,19 @@ public class TwoThreeFourTreeSet<T> implements SortedTreeSet<T> {
 		if(root == null){
 			createRootNode(element);
 			return true;
-		}
-		
+		}		
 		if(contains(element))
-			return false;
-		
+			return false;		
 		Node<T> node = root;
 		while(true) {
-			if(node.isFull()) {
+			if(node.isFull())
 				node = splitNode(node);
-			} else if(node.isLeaf()){
+			else if(node.isLeaf()){
 				node.insertElement(element);
 				size++;
 				return true;
-			} else {
+			} else 
 				node = node.getSuccessorNodeForElement(element);
-			}
 		}
 	}
 
@@ -255,15 +249,12 @@ public class TwoThreeFourTreeSet<T> implements SortedTreeSet<T> {
 		if(parentNode == null) {
 			parentNode = new Node<T>((firstValue, secondValue) -> compareValues(firstValue, secondValue));
 			root = parentNode;
-		}	
-		
+		}		
 		parentNode.insertElement(node.getMiddleElement());		
 		parentNode.addChild(createNewLeftNode(node));	
-		parentNode.addChild(createNewRightNode(node));
-		
+		parentNode.addChild(createNewRightNode(node));	
 		if(!parentNode.isLeaf())
-			parentNode.removeChild(node);
-		
+			parentNode.removeChild(node);	
 		return parentNode;
 	}
 
@@ -316,8 +307,7 @@ public class TwoThreeFourTreeSet<T> implements SortedTreeSet<T> {
 	@Override
 	public T first() {
 		if (isEmpty())
-			throw new NoSuchElementException();
-		
+			throw new NoSuchElementException();	
 		Node<T> currentNode = root;
 		while(!currentNode.isLeaf()) {
 			currentNode = currentNode.getFirstChildNode();
@@ -328,8 +318,7 @@ public class TwoThreeFourTreeSet<T> implements SortedTreeSet<T> {
 	@Override
 	public T last() {
 		if (isEmpty())
-			throw new NoSuchElementException();
-		
+			throw new NoSuchElementException();		
 		Node<T> currentNode = root;
 		while(!currentNode.isLeaf()) {
 			currentNode = currentNode.getLastChildNode();

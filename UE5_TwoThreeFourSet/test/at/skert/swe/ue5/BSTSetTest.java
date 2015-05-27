@@ -16,6 +16,11 @@ public class BSTSetTest extends SortedTreeSetTestBase {
 		return new BSTSet<T>(comparator);
 	}
 
+	@Override
+	protected <T> BSTSet<T> callDefaultCtor(){
+		return new BSTSet<T>();
+	}
+	
 	@Test
 	public void testHeight() {
 		final int[] values = new int[] {1, 2, 3, 0, 5};
@@ -25,11 +30,5 @@ public class BSTSetTest extends SortedTreeSetTestBase {
 			set.add(values[i]);
 		}
 		assertEquals(3, set.height());
-	}
-	
-	@Test
-	public void comparatorShouldBeNullForDefaultCtor(){
-		BSTSet<Integer> set = new BSTSet<Integer>();
-		assertEquals(null, set.comparator());
 	}
 }
