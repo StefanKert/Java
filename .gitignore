@@ -14,3 +14,8 @@ UE3_Hamming_Sort/UE2_DOKU.docx
 *.docx
 .metadata/**
 .recommenders/**
+*.out
+UE5_TwoThreeFourSet/UE5_Kert.log
+*.pdf
+UE5_TwoThreeFourSet/UE5_Kert.tex
+*.tex
