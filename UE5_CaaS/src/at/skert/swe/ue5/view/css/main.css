@@ -1,0 +1,26 @@
+
+#add-button {
+  -fx-background-radius: 50%; 
+  -fx-min-width: 56px;
+  -fx-min-height: 56px;
+  -fx-max-width: 56px;
+  -fx-max-height: 56px;
+  -fx-graphic: url('add.png');
+  -fx-background-color: firebrick;
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.26), 2, 5, 0, 0);
+}
+
+#user-lock-button {
+  -fx-graphic: url('lock.png');
+  -fx-background-color: transparent;
+}
+
+#user-delete-button {
+  -fx-graphic: url('delete.png');
+  -fx-background-color: transparent;
+}
+
+#user-edit-button {
+  -fx-graphic: url('edit.png');
+  -fx-background-color: transparent;
+}
