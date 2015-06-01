@@ -8,6 +8,7 @@ import at.skert.swe.ue6.contracts.MenuCategory;
 import at.skert.swe.ue6.contracts.exceptions.EntityNotAddedException;
 import at.skert.swe.ue6.data.MenuCategoryRepository;
 import at.skert.swe.ue6.data.MenuRepository;
+import at.skert.swe.ue6.view.utils.MessageBox;
 import at.skert.swe.ue6.viewmodel.MenuPlanManagementViewModel;
 
 public class MenuPlanManagementInteractions {
@@ -44,13 +45,8 @@ public class MenuPlanManagementInteractions {
       menuRepository.delete(menu);
       viewModel.getMenuList().clear();
       viewModel.getMenuList().addAll(menuRepository.getAllByPredicate(x -> x.getCategory().getId() == viewModel.getSelectedMenuCategory().getId()));
-    } catch (EntityNotAddedException e) {
-      Alert alert = new Alert(AlertType.ERROR);
-      alert.setTitle("Fehler");
-      alert.setHeaderText("Es ist ein Fehler beim Löschen des Menüs aufgetreten.");
-      alert.setContentText("Das zu löschende Menü wurde nicht in der Datenbank gefunden.");
-      alert.showAndWait();
-      e.printStackTrace();
+    } catch (EntityNotAddedException exception) {
+      MessageBox.showErrorDialog("Fehler", "Es ist ein Fehler beim Löschen des Menüs aufgetreten.", "Das zu löschende Menü wurde nicht in der Datenbank gefunden.", exception);
     }
   }
   
@@ -67,13 +63,8 @@ public class MenuPlanManagementInteractions {
       menuCategoryRepository.delete(category);
       viewModel.getMenuCategoryList().clear();
       viewModel.getMenuCategoryList().addAll(menuCategoryRepository.getAll());
-    } catch (EntityNotAddedException e) {
-      Alert alert = new Alert(AlertType.ERROR);
-      alert.setTitle("Fehler");
-      alert.setHeaderText("Es ist ein Fehler beim Löschen der Kategorie aufgetreten.");
-      alert.setContentText("Die zu löschende Kategorie wurde nicht in der Datenbank gefunden.");
-      alert.showAndWait();
-      e.printStackTrace();
+    } catch (EntityNotAddedException exception) {
+      MessageBox.showErrorDialog("Fehler", "Es ist ein Fehler beim Löschen der Kategorie aufgetreten.", "Die zu löschende Kategorie wurde nicht in der Datenbank gefunden.", exception);
     }
   }
   
