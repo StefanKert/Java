@@ -1,20 +1,15 @@
 package at.skert.swe.ue6.viewmodel;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import at.skert.swe.ue6.contracts.Action;
 import at.skert.swe.ue6.contracts.ActionWithParam;
 import at.skert.swe.ue6.contracts.Menu;
 import at.skert.swe.ue6.contracts.MenuCategory;
-import at.skert.swe.ue6.contracts.User;
-import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.ReadOnlyBooleanWrapper;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 public class MenuPlanManagementViewModel {
   private final ObservableList<Menu> menuList = FXCollections.observableList(new ArrayList<Menu>()); 

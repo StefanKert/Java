@@ -1,13 +1,5 @@
-package at.skert.swe.ue6.view;
+package at.skert.swe.ue6.view.page;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import at.skert.swe.ue6.contracts.User;
-import at.skert.swe.ue6.viewmodel.UserManagementViewModel;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.EventType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -15,8 +7,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-import javafx.util.Callback;
+import at.skert.swe.ue6.contracts.User;
+import at.skert.swe.ue6.viewmodel.UserManagementViewModel;
 
 public class UserManagementPage extends AnchorPane {
   private UserManagementViewModel viewModel;
@@ -35,26 +27,21 @@ public class UserManagementPage extends AnchorPane {
         Label label = new Label();   
         Button editButton = new Button();
         editButton.setId("user-edit-button");
+        editButton.setOnAction(event -> viewModel.editUser(user));
         Button lockButton = new Button();
         Button deleteButton = new Button();        
         deleteButton.setId("user-delete-button");
-        deleteButton.setOnAction(event -> {
-          viewModel.deleteUser(user);
-        });
+        deleteButton.setOnAction(event ->  viewModel.deleteUser(user));
         label.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(label, Priority.ALWAYS);
-        if (user.getIsLocked()) {
+        if (!user.getActivated()) {
           lockButton.setId("user-unlock-button");
-          lockButton.setOnAction(event -> {
-            viewModel.unlockUser(user);
-          });
+          lockButton.setOnAction(event -> viewModel.activateUser(user));
         } else {
           lockButton.setId("user-lock-button");
-          lockButton.setOnAction(event -> {
-            viewModel.lockUser(user);
-          });
+          lockButton.setOnAction(event -> viewModel.deactivateUser(user));
         }
-        label.setText(user.getUserName());
+        label.setText(user.getUsername());
         box.getChildren().addAll(label, editButton, lockButton, deleteButton);
         setGraphic(box);
       }

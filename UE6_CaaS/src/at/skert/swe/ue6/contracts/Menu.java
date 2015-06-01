@@ -10,17 +10,16 @@ public class Menu implements IEntity {
     private MenuCategory category;
     private LocalDate begin, end;
 
-    public Menu(String name, double price, MenuCategory category, LocalDate begin, LocalDate end) {
-        this.name = name;
-        this.price = price;
-        this.category = category;
-        this.begin = begin;
-        this.end = end;
+    public Menu(String name, double price, MenuCategory category){
+      this.name = name;
+      this.price = price;
+      this.category = category;
     }
     
-    public Menu(long id, String name, double price, MenuCategory category, LocalDate begin, LocalDate end) {
-        this(name, price, category, begin, end);
-        this.id = id;       
+    public Menu(String name, double price, MenuCategory category, LocalDate begin, LocalDate end) {
+        this(name, price, category);
+        this.begin = begin;
+        this.end = end;
     }
     
     public long getId() {

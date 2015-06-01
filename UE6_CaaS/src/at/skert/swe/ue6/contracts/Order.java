@@ -5,8 +5,7 @@ public class Order implements IEntity {
   private String caption;
   private String description;
   
-  public Order(long id, String caption, String description){
-    this.id = id;
+  public Order(String caption, String description){
     this.caption = caption;
     this.description = description;
   }
@@ -14,7 +13,9 @@ public class Order implements IEntity {
   public long getId(){
     return id;
   }
-  
+  public void setId(long id) {
+    this.id = id;
+  }
   public String getCaption(){
     return caption;
   }

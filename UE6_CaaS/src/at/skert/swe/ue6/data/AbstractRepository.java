@@ -6,16 +6,15 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import at.skert.swe.ue6.contracts.Continuation;
-import at.skert.swe.ue6.contracts.ErrorContinuation;
+import at.skert.swe.ue6.contracts.Action;
+import at.skert.swe.ue6.contracts.ActionWithParam;
 import at.skert.swe.ue6.contracts.IEntity;
 import at.skert.swe.ue6.contracts.IRepository;
-import at.skert.swe.ue6.contracts.Menu;
-import at.skert.swe.ue6.contracts.User;
 import at.skert.swe.ue6.contracts.exceptions.EntityNotAddedException;
 
 public abstract class AbstractRepository<T extends IEntity> implements IRepository<T> {
- protected List<T> staticList;
+  protected List<T> staticList;
+  private long idCounter = 0;
   
   public AbstractRepository(){
     staticList = new ArrayList<T>();
@@ -32,35 +31,44 @@ public abstract class AbstractRepository<T extends IEntity> implements IReposito
   }
   
   @Override
-  public void create(T entity) {
+  public void create(T entity, Action onSuccess, ActionWithParam<Exception> onError) {
+    entity.setId(getNextIdForInsert());
     staticList.add(entity);
+    onSuccess.invoke();
   }
 
   @Override
-  public void update(T entity) throws EntityNotAddedException {
-    Optional<T> entityOptional = staticList.stream().filter(x -> x.getId() == entity.getId()).findFirst();
-   if(!entityOptional.isPresent()){
-     throw new EntityNotAddedException();
+  public void update(T entity, Action onSuccess, ActionWithParam<Exception> onError){
+   if(!staticList.stream().anyMatch(x -> x.getId() == entity.getId())){
+     onError.invoke(new EntityNotAddedException());
    }
    else{
-     T entityToUpdate = entityOptional.get();
-     entityToUpdate = entity;
+     staticList.stream().forEach(x -> {
+       if(x.getId() == entity.getId())
+         x = entity;
+     });
+     onSuccess.invoke();
    }
   }
 
   @Override
-  public void delete(T entity) throws EntityNotAddedException {
+  public void delete(T entity, Action onSuccess, ActionWithParam<Exception> onError) {
     if(!staticList.removeIf(x -> x.getId() == entity.getId()))
-      throw new EntityNotAddedException();
+      onError.invoke(new EntityNotAddedException());
+    else
+      onSuccess.invoke();
   }
 
   @Override
-  public void getById(long id, Continuation<T> continueWith, ErrorContinuation errorContinuation) {
+  public void getById(long id, ActionWithParam<T> continueWith, ActionWithParam<Exception> onError) {
     Optional<T> entityOptional = staticList.stream().filter(x -> x.getId() == id).findFirst();
    if(!entityOptional.isPresent())
-     errorContinuation.onError(new EntityNotAddedException());
+     onError.invoke(new EntityNotAddedException());
    else
-     continueWith.continueWith(entityOptional.get());
+     continueWith.invoke(entityOptional.get());
   }
-
+  
+  private long getNextIdForInsert(){
+    return idCounter++;
+  }
 }

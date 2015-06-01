@@ -1,11 +1,5 @@
-package at.skert.swe.ue6.view;
+package at.skert.swe.ue6.view.page;
 
-import at.skert.swe.ue6.contracts.Menu;
-import at.skert.swe.ue6.contracts.MenuCategory;
-import at.skert.swe.ue6.contracts.User;
-import at.skert.swe.ue6.viewmodel.MenuPlanManagementViewModel;
-import at.skert.swe.ue6.viewmodel.UserManagementViewModel;
-import javafx.beans.property.Property;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -15,6 +9,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import at.skert.swe.ue6.contracts.Menu;
+import at.skert.swe.ue6.contracts.MenuCategory;
+import at.skert.swe.ue6.viewmodel.MenuPlanManagementViewModel;
 
 public class MenuPlanManagementPage extends AnchorPane {
   private MenuPlanManagementViewModel viewModel;
@@ -35,7 +32,7 @@ public class MenuPlanManagementPage extends AnchorPane {
         });
         label.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(label, Priority.ALWAYS);
-        label.setText(menuCategory.getName());
+        label.setText(menuCategory.getName() + " " + menuCategory.getId());
         box.getChildren().addAll(label, deleteButton);
         setGraphic(box);
       }
@@ -61,7 +58,7 @@ public class MenuPlanManagementPage extends AnchorPane {
         });
         label.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(label, Priority.ALWAYS);
-        label.setText(menu.getName());
+        label.setText(menu.getName() + " " + menu.getId());
         box.getChildren().addAll(label, deleteButton);
         setGraphic(box);
       }

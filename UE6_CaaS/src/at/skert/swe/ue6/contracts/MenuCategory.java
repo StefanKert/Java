@@ -8,17 +8,14 @@ public class MenuCategory implements IEntity{
       this.name = name;
   }
   
-  public MenuCategory(long id, String name) {
-      this(name);
-      this.id = id;
-  }
-  
   public long getId() {
       return id;
   }
-  public void setId(int id) {
-      this.id = id;
+  
+  public void setId(long id) {
+    this.id = id;
   }
+  
   public String getName() {
       return name;
   }

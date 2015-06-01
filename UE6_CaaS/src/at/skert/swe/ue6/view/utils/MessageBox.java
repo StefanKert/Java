@@ -2,27 +2,30 @@ package at.skert.swe.ue6.view.utils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Optional;
 
+import at.skert.swe.ue6.contracts.Action;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
 public class MessageBox {
-  public static void showErrorDialog(String title, String headerText, String content, Exception exception){
+  public static void showErrorDialog(String title, String headerText, String text, Exception exception){
     Alert alert = new Alert(AlertType.ERROR);
-    alert.setTitle("Exception Dialog");
-    alert.setHeaderText("Look, an Exception Dialog");
-    alert.setContentText("Could not find file blabla.txt!");
+    alert.setTitle(title);
+    alert.setHeaderText(headerText);
+    alert.setContentText(text);
     // Create expandable Exception.
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     exception.printStackTrace(pw);
     String exceptionText = sw.toString();
 
-    Label label = new Label("The exception stacktrace was:");
+    Label label = new Label("Stacktrace:");
 
     TextArea textArea = new TextArea(exceptionText);
     textArea.setEditable(false);
@@ -42,5 +45,19 @@ public class MessageBox {
     alert.getDialogPane().setExpandableContent(expContent);
 
     alert.showAndWait();
+  }
+  
+  public static void showConfirmDialog(String title, String text, Action onOk, Action onCancel){
+    Alert alert = new Alert(AlertType.CONFIRMATION);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(text);
+
+    Optional<ButtonType> result = alert.showAndWait();
+    if (result.get() == ButtonType.OK){
+        onOk.invoke();
+    } else {
+        onCancel.invoke();
+    }
   }
 }

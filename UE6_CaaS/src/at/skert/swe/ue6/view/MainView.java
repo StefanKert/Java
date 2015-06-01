@@ -1,30 +1,18 @@
 package at.skert.swe.ue6.view;
 
-import at.skert.swe.ue6.contracts.IRepository;
-import at.skert.swe.ue6.contracts.Menu;
-import at.skert.swe.ue6.contracts.MenuCategory;
-import at.skert.swe.ue6.data.MenuCategoryRepository;
-import at.skert.swe.ue6.data.MenuRepository;
-import at.skert.swe.ue6.data.UserRepository;
-import at.skert.swe.ue6.integration.MenuPlanManagementInteractions;
-import at.skert.swe.ue6.integration.UserManagementInteractions;
-import at.skert.swe.ue6.viewmodel.MenuPlanManagementViewModel;
-import at.skert.swe.ue6.viewmodel.UserManagementViewModel;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import at.skert.swe.ue6.integration.MenuPlanManagementInteractions;
+import at.skert.swe.ue6.integration.UserManagementInteractions;
+import at.skert.swe.ue6.view.page.MenuPlanManagementPage;
+import at.skert.swe.ue6.view.page.UserManagementPage;
 
 public class MainView extends Application {
 

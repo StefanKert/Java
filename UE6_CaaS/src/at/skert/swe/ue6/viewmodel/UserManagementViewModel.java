@@ -1,26 +1,21 @@
 package at.skert.swe.ue6.viewmodel;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
-import at.skert.swe.ue6.contracts.Action;
-import at.skert.swe.ue6.contracts.ActionWithParam;
-import at.skert.swe.ue6.contracts.Menu;
-import at.skert.swe.ue6.contracts.MenuCategory;
-import at.skert.swe.ue6.contracts.User;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import at.skert.swe.ue6.contracts.Action;
+import at.skert.swe.ue6.contracts.ActionWithParam;
+import at.skert.swe.ue6.contracts.User;
 
 public class UserManagementViewModel {
   private final ObservableList<User> userList = FXCollections.observableList(new ArrayList<User>()); 
 
   private Action addUserMethod;
+  private ActionWithParam<User> editUserMethod;
   private ActionWithParam<User> deleteUserMethod;
-  private ActionWithParam<User> lockUserMethod;
-  private ActionWithParam<User> unlockUserMethod;
-
+  private ActionWithParam<User> deactivateUserMethod;
+  private ActionWithParam<User> activateUserMethod;
   
   public ObservableList<User> getUserList() {
     return userList;
@@ -30,31 +25,40 @@ public class UserManagementViewModel {
     addUserMethod.invoke();
   }
   
+  public void editUser(User user){
+    editUserMethod.invoke(user);
+  }
+  
   public void deleteUser(User user){
     deleteUserMethod.invoke(user);
   }
   
-  public void lockUser(User user){
-    unlockUserMethod.invoke(user);
+  public void deactivateUser(User user){
+    deactivateUserMethod.invoke(user);
   }
   
-  public void unlockUser(User user){
-    unlockUserMethod.invoke(user);
+  public void activateUser(User user){
+    activateUserMethod.invoke(user);
   }
   
   public void setAddUserMethod(Action addUserMethod){
     this.addUserMethod = addUserMethod;
   }
   
+  
+  public void setEditUserMethod(ActionWithParam<User> editUserMethod){
+    this.editUserMethod = editUserMethod;
+  }
+  
   public void setDeletUserMethod(ActionWithParam<User> deleteUserMethod){
     this.deleteUserMethod = deleteUserMethod;
   }
 
-  public void setLockUserMethod(ActionWithParam<User> lockUserMethod){
-    this.lockUserMethod = lockUserMethod;
+  public void setDeactivateUserMethod(ActionWithParam<User> deactivateUserMethod){
+    this.deactivateUserMethod = deactivateUserMethod;
   }
   
-  public void setUnlockUserMethod(ActionWithParam<User> unlockUserMethod){
-    this.unlockUserMethod = unlockUserMethod;
+  public void setActivateUserMethod(ActionWithParam<User> activateUserMethod){
+    this.activateUserMethod = activateUserMethod;
   }
 }
