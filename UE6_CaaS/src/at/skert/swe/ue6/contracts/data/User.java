@@ -1,4 +1,6 @@
-package at.skert.swe.ue6.contracts;
+package at.skert.swe.ue6.contracts.data;
+
+import at.skert.swe.ue6.contracts.IEntity;
 
 public class User implements IEntity {
   private long id;
@@ -60,5 +62,11 @@ public class User implements IEntity {
   
   public void setActivated(boolean activated){
     this.activated = activated;
+  }
+  
+  
+  @Override
+  public String toString() {
+      return firstname + " " + lastname;
   }
 }

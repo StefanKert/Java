@@ -1,12 +1,11 @@
 package at.skert.swe.ue6.viewmodel;
 
 import java.util.ArrayList;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import at.skert.swe.ue6.contracts.Action;
 import at.skert.swe.ue6.contracts.ActionWithParam;
-import at.skert.swe.ue6.contracts.User;
+import at.skert.swe.ue6.contracts.data.User;
 
 public class UserManagementViewModel {
   private final ObservableList<User> userList = FXCollections.observableList(new ArrayList<User>()); 
@@ -16,11 +15,7 @@ public class UserManagementViewModel {
   private ActionWithParam<User> deleteUserMethod;
   private ActionWithParam<User> deactivateUserMethod;
   private ActionWithParam<User> activateUserMethod;
-  
-  public ObservableList<User> getUserList() {
-    return userList;
-  }
-  
+
   public void addUser(){
     addUserMethod.invoke();
   }
@@ -39,12 +34,15 @@ public class UserManagementViewModel {
   
   public void activateUser(User user){
     activateUserMethod.invoke(user);
+  }  
+  
+  public ObservableList<User> getUserList() {
+    return userList;
   }
   
   public void setAddUserMethod(Action addUserMethod){
     this.addUserMethod = addUserMethod;
   }
-  
   
   public void setEditUserMethod(ActionWithParam<User> editUserMethod){
     this.editUserMethod = editUserMethod;

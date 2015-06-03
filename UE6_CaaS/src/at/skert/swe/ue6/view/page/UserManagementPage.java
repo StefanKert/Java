@@ -1,79 +1,71 @@
 package at.skert.swe.ue6.view.page;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import at.skert.swe.ue6.contracts.User;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import at.skert.swe.ue6.contracts.data.User;
+import at.skert.swe.ue6.view.utils.UserListCellWithButtons;
 import at.skert.swe.ue6.viewmodel.UserManagementViewModel;
 
 public class UserManagementPage extends AnchorPane {
   private UserManagementViewModel viewModel;
-  private Button addButton = new Button();;
-  private ListView<User> listView = new ListView<User>();
-
-  private class UserListCell extends ListCell<User> {
-    public UserListCell(){}
-
-    @Override
-    protected void updateItem(User user, boolean bln) {
-      super.updateItem(user, bln);
-      
-      if (user != null)  {
-        HBox box = new HBox();        
-        Label label = new Label();   
-        Button editButton = new Button();
-        editButton.setId("user-edit-button");
-        editButton.setOnAction(event -> viewModel.editUser(user));
-        Button lockButton = new Button();
-        Button deleteButton = new Button();        
-        deleteButton.setId("user-delete-button");
-        deleteButton.setOnAction(event ->  viewModel.deleteUser(user));
-        label.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(label, Priority.ALWAYS);
-        if (!user.getActivated()) {
-          lockButton.setId("user-unlock-button");
-          lockButton.setOnAction(event -> viewModel.activateUser(user));
-        } else {
-          lockButton.setId("user-lock-button");
-          lockButton.setOnAction(event -> viewModel.deactivateUser(user));
-        }
-        label.setText(user.getUsername());
-        box.getChildren().addAll(label, editButton, lockButton, deleteButton);
-        setGraphic(box);
-      }
-      else{
-        setGraphic(null);
-      }
-    }
-  }
 
   public UserManagementPage(UserManagementViewModel viewModel) {
     super();
     this.viewModel = viewModel;
-    initAddButton();
-    initListView();
-    this.getChildren().addAll(listView, addButton);
+    this.getChildren().addAll(createMenuView());
   }
   
-  private void initListView(){
-    listView.setCellFactory(p -> new UserListCell());
+  private Pane createMenuView(){
+    VBox pane = new VBox();
+    pane.getChildren().addAll(createTitleHeadBox("Benutzer", createAddButton()), createListView());
+    AnchorPane.setTopAnchor(pane, 10.0);
+    AnchorPane.setLeftAnchor(pane, 10.0);
+    AnchorPane.setRightAnchor(pane, 10.0);
+    return pane;
+  }
+  
+  private ListView<User> createListView(){
+    ListView<User> listView = new ListView<User>();
+    listView.setCellFactory(p -> { 
+      UserListCellWithButtons cell = new UserListCellWithButtons(true, true);
+      cell.setEditMethod(user -> viewModel.editUser(user));
+      cell.setDeleteMethod(user -> viewModel.deleteUser(user));
+      cell.setActivateMethod(user -> viewModel.activateUser(user));
+      cell.setDeactivateMethod(user -> viewModel.deactivateUser(user));
+      return cell;
+    });
     listView.setItems(viewModel.getUserList());
-
-    AnchorPane.setTopAnchor(listView, 50.0);
-    AnchorPane.setLeftAnchor(listView, 10.0);
-    AnchorPane.setRightAnchor(listView, 10.0);
+    return listView;
   }
   
-  private void initAddButton(){
+  private Button createAddButton(){
+    Button addButton = new Button();
     addButton.setOnAction(event -> {
       this.viewModel.addUser();
     });    
-    addButton.setId("user-add-button");
+    addButton.getStyleClass().addAll("image-button", "add-button");
     AnchorPane.setTopAnchor(addButton, 10.0);
     AnchorPane.setRightAnchor(addButton, 10.0);
+    return addButton;
+  }
+  
+  private HBox createTitleHeadBox(String title, Button addButton){
+    Label titleLabel = new Label(title);
+    titleLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+    titleLabel.setMaxWidth(Double.MAX_VALUE);
+    HBox.setHgrow(titleLabel, Priority.ALWAYS);
+    HBox.setHgrow(addButton, Priority.ALWAYS);
+    HBox titlePane = new HBox(titleLabel, addButton);
+    titlePane.setPadding(new Insets(10)); 
+    return titlePane;
   }
 }

@@ -1,6 +1,6 @@
 package at.skert.swe.ue6.data;
 
-import at.skert.swe.ue6.contracts.MenuCategory;
+import at.skert.swe.ue6.contracts.data.MenuCategory;
 
 public class MenuCategoryRepository  extends AbstractRepository<MenuCategory> {
   public MenuCategoryRepository(){

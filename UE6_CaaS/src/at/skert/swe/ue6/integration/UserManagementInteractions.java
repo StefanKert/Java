@@ -1,7 +1,7 @@
 package at.skert.swe.ue6.integration;
 
 import at.skert.swe.ue6.contracts.IRepository;
-import at.skert.swe.ue6.contracts.User;
+import at.skert.swe.ue6.contracts.data.User;
 import at.skert.swe.ue6.data.UserRepository;
 import at.skert.swe.ue6.view.dialog.AddUserDialog;
 import at.skert.swe.ue6.view.dialog.EditUserDialog;
@@ -39,7 +39,18 @@ public class UserManagementInteractions {
   }
 
   public void deleteUser(User user) {
-    viewModel.getUserList().removeIf(x -> x.getId() == user.getId());
+    MessageBox.showConfirmDialog("Achtung", "Wollen Sie den Benutzer " + user.getUsername() + " wirklich löschen? ", () -> {
+    userRepository.delete(user, () -> {
+      refreshUsers();
+    }, exception ->{
+      MessageBox
+      .showErrorDialog(
+          "Fehler",
+          "Es ist ein Fehler beim Löschen des Benutzers aufgetreten.",
+          "Der zu löschende Benutzer wurde nicht in der Datenbank gefunden.",
+          exception);
+    });
+    }, () -> {});
   }
 
   public void deactivateUser(User user) {

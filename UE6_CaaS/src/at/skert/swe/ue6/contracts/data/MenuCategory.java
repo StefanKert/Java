@@ -1,4 +1,6 @@
-package at.skert.swe.ue6.contracts;
+package at.skert.swe.ue6.contracts.data;
+
+import at.skert.swe.ue6.contracts.IEntity;
 
 public class MenuCategory implements IEntity{
   private long id;

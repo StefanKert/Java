@@ -1,132 +1,101 @@
 package at.skert.swe.ue6.view.page;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import at.skert.swe.ue6.contracts.Menu;
-import at.skert.swe.ue6.contracts.MenuCategory;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import at.skert.swe.ue6.contracts.data.Menu;
+import at.skert.swe.ue6.contracts.data.MenuCategory;
+import at.skert.swe.ue6.view.utils.GenericListCellWithButtons;
 import at.skert.swe.ue6.viewmodel.MenuPlanManagementViewModel;
 
 public class MenuPlanManagementPage extends AnchorPane {
   private MenuPlanManagementViewModel viewModel;
 
-  private class MenuCategoryPlanListCell extends ListCell<MenuCategory> {
-    public MenuCategoryPlanListCell(){}
-
-    @Override
-    protected void updateItem(MenuCategory menuCategory, boolean bln) {
-      super.updateItem(menuCategory, bln);     
-      if (menuCategory != null)  {
-        HBox box = new HBox();        
-        Label label = new Label();   
-        Button deleteButton = new Button();        
-        deleteButton.setId("user-delete-button");
-        deleteButton.setOnAction(event -> {
-          viewModel.getDeleteMenuCategoryMethod().invoke(menuCategory);
-        });
-        label.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(label, Priority.ALWAYS);
-        label.setText(menuCategory.getName() + " " + menuCategory.getId());
-        box.getChildren().addAll(label, deleteButton);
-        setGraphic(box);
-      }
-      else{
-        setGraphic(null);
-      }
-    }
-  }
-  
-  private class MenuPlanListCell extends ListCell<Menu> {
-    public MenuPlanListCell(){}
-
-    @Override
-    protected void updateItem(Menu menu, boolean bln) {
-      super.updateItem(menu, bln);     
-      if (menu != null)  {
-        HBox box = new HBox();        
-        Label label = new Label();   
-        Button deleteButton = new Button();        
-        deleteButton.setId("user-delete-button");
-        deleteButton.setOnAction(event -> {
-          viewModel.getDeleteMenuMethod().invoke(menu);
-        });
-        label.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(label, Priority.ALWAYS);
-        label.setText(menu.getName() + " " + menu.getId());
-        box.getChildren().addAll(label, deleteButton);
-        setGraphic(box);
-      }
-      else{
-        setGraphic(null);
-      }
-    }
-  }
-
   public MenuPlanManagementPage(MenuPlanManagementViewModel viewModel) {
     super();
     this.viewModel = viewModel;
-    this.getChildren().addAll(createButtonBox(), createSplitContainer());
+    this.getChildren().addAll(createSplitContainer());
   }
   
   private SplitPane createSplitContainer(){
     SplitPane container = new SplitPane();
     VBox.setVgrow(container, Priority.ALWAYS);
-    AnchorPane.setTopAnchor(container, 50.0);
+    AnchorPane.setTopAnchor(container, 10.0);
     AnchorPane.setLeftAnchor(container, 10.0);
     AnchorPane.setRightAnchor(container, 10.0);
     container.getItems().addAll(createCategoryView(), createMenuView());
     return container;
   }
   
-  private  ListView<MenuCategory> createCategoryView(){
+  private  Pane createCategoryView(){
+    VBox pane = new VBox();
+    pane.getChildren().addAll(createTitleHeadBox("Kategorie", createAddMenuCategoryButton()), createMenuCategoryListView());
+    return pane;
+  }
+  
+  private ListView<MenuCategory> createMenuCategoryListView(){
     ListView<MenuCategory> categoryListView = new ListView<MenuCategory>();
     categoryListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
       viewModel.setSelectedMenuCategory(newValue);
     });
-    categoryListView.setCellFactory(p -> new MenuCategoryPlanListCell());
+    categoryListView.setCellFactory(p -> { 
+      GenericListCellWithButtons<MenuCategory> cell = new GenericListCellWithButtons<MenuCategory>(false, true);
+      cell.setDeleteMethod(menuCategory -> viewModel.deleteMenuCategory(menuCategory));
+      return cell;
+    });
     categoryListView.setItems(viewModel.getMenuCategoryList());
     return categoryListView;
   }
   
-  private ListView<Menu> createMenuView(){
+  private Button createAddMenuCategoryButton(){
+    Button addButton = new Button();
+    addButton.setOnAction(event -> viewModel.addMenuCategory());    
+    addButton.getStyleClass().addAll("image-button", "add-button");
+    return addButton;
+  }
+  
+  private Pane createMenuView(){
+    VBox pane = new VBox();
+    pane.visibleProperty().bind(viewModel.isMenuCategorySelectedProperty());
+    pane.getChildren().addAll(createTitleHeadBox("Menü", createAddMenuButton()), createMenuListView());
+    return pane;
+  }
+  
+  private ListView<Menu> createMenuListView(){
     ListView<Menu> menuListView = new ListView<Menu>();
-    menuListView.setCellFactory(p -> new MenuPlanListCell());
+    menuListView.setCellFactory(p -> {
+      GenericListCellWithButtons<Menu> cell = new GenericListCellWithButtons<Menu>(false, true);
+      cell.setDeleteMethod(menu -> viewModel.deleteMenu(menu));
+      return cell;
+    });
     menuListView.setItems(viewModel.getMenuList());
     return menuListView;
   }
   
-  private HBox createButtonBox(){
-    HBox box = new HBox();
-    box.getChildren().addAll(createAddMenuCategoryButton(), createAddMenuButton());
-    return box;
-  }
-  
-  private Button createAddMenuCategoryButton(){
-    Button addButton = new Button("Kategorie hinzufügen");
-    addButton.setOnAction(event -> {
-      viewModel.getAddMenuCategoryMethod().invoke();
-    });    
-    addButton.setId("user-add-button");
-    AnchorPane.setTopAnchor(addButton, 10.0);
-    AnchorPane.setRightAnchor(addButton, 10.0);
-    return addButton;
-  }
-  
   private Button createAddMenuButton(){
-    Button addButton = new Button("Menü hinzufügen");
-    addButton.setOnAction(event -> {
-      viewModel.getAddMenuMethod().invoke(viewModel.getSelectedMenuCategory());
-    });    
-    addButton.setId("user-add-button");
-    addButton.visibleProperty().bind(viewModel.isAddMenuPossibleProperty());
-    AnchorPane.setTopAnchor(addButton, 10.0);
-    AnchorPane.setRightAnchor(addButton, 10.0);
+    Button addButton = new Button();
+    addButton.setOnAction(event -> viewModel.addMenuForCategory());    
+    addButton.getStyleClass().addAll("image-button", "add-button");
     return addButton;
+  }
+
+  private HBox createTitleHeadBox(String title, Button addButton){
+    Label titleLabel = new Label(title);
+    titleLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+    titleLabel.setMaxWidth(Double.MAX_VALUE);
+    HBox.setHgrow(titleLabel, Priority.ALWAYS);
+    HBox.setHgrow(addButton, Priority.ALWAYS);
+    HBox titlePane = new HBox(titleLabel, addButton);
+    titlePane.setPadding(new Insets(10)); 
+    return titlePane;
   }
 }

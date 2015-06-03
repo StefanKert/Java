@@ -1,7 +1,7 @@
 package at.skert.swe.ue6.data;
 import at.skert.swe.ue6.contracts.IRepository;
-import at.skert.swe.ue6.contracts.Menu;
-import at.skert.swe.ue6.contracts.MenuCategory;
+import at.skert.swe.ue6.contracts.data.Menu;
+import at.skert.swe.ue6.contracts.data.MenuCategory;
 
 public class MenuRepository  extends AbstractRepository<Menu> {
   public MenuRepository(IRepository<MenuCategory> menuCategoryRepository){

@@ -1,7 +1,7 @@
 package at.skert.swe.ue6.view.dialog;
 
 import at.skert.swe.ue6.contracts.ActionWithParam;
-import at.skert.swe.ue6.contracts.User;
+import at.skert.swe.ue6.contracts.data.User;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -62,6 +62,7 @@ public class EditUserDialog {
 
   private GridPane createInputGrid() {
       GridPane gridForm = new GridPane();
+      gridForm.getStylesheets().add(getClass().getResource("../css/main.css").toExternalForm());
       gridForm.setHgap(10);
       gridForm.setVgap(10);
       gridForm.setPadding(new Insets(25, 25, 25, 25));
@@ -111,13 +112,14 @@ public class EditUserDialog {
 
   private Button createButtonCancel() {
       btnCancel = new Button("Abbrechen");
+      btnCancel.getStyleClass().addAll("delete-button");
       btnCancel.setOnAction(event -> primaryStage.close());  
       return btnCancel;
   }
 
   private Button createButtonSave() {
       btnSave = new Button("Speichern");
-      
+      btnSave.getStyleClass().addAll("done-button");
       btnSave.setOnAction(event -> {
               if(getFirstname().isEmpty() || getLastname().isEmpty() || getUsername().isEmpty() || getPassword().isEmpty())
                   return;

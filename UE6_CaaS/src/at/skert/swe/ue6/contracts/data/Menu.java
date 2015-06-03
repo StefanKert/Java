@@ -1,6 +1,8 @@
-package at.skert.swe.ue6.contracts;
+package at.skert.swe.ue6.contracts.data;
 
 import java.time.LocalDate;
+
+import at.skert.swe.ue6.contracts.IEntity;
 
 
 public class Menu implements IEntity {

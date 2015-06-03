@@ -1,6 +1,6 @@
 package at.skert.swe.ue6.data;
 
-import at.skert.swe.ue6.contracts.User;
+import at.skert.swe.ue6.contracts.data.User;
 
 public class UserRepository  extends AbstractRepository<User> { 
   public UserRepository(){

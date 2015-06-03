@@ -1,29 +1,29 @@
 
-#user-add-button {
+.add-button {
   -fx-graphic: url('add.png');
-  -fx-background-color: transparent;
+  
 }
 
-#user-lock-button {
+.lock-button {
   -fx-graphic: url('lock.png');
-  -fx-background-color: transparent;
-  -fx-font-size: 18;
 }
 
-#user-unlock-button {
+.unlock-button {
   -fx-graphic: url('unlock.png');
-  -fx-background-color: transparent;
-  -fx-font-size: 18;
 }
 
-#user-delete-button {
+.delete-button {
   -fx-graphic: url('delete.png');
-  -fx-background-color: transparent;
-  -fx-font-size: 18;
 }
 
-#user-edit-button {
+.edit-button {
   -fx-graphic: url('edit.png');
-  -fx-background-color: transparent;
-  -fx-font-size: 18;
+}
+
+.image-button {
+  -fx-background-color: transparent;	
+}
+
+.done-button {
+  -fx-graphic: url('done.png');
 }
