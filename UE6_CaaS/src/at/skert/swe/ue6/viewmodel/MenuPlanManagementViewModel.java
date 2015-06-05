@@ -12,8 +12,10 @@ import at.skert.swe.ue6.contracts.data.Menu;
 import at.skert.swe.ue6.contracts.data.MenuCategory;
 
 public class MenuPlanManagementViewModel {
-  private final ObservableList<Menu> menuList = FXCollections.observableList(new ArrayList<Menu>()); 
-  private final ObservableList<MenuCategory> categoryList = FXCollections.observableList(new ArrayList<MenuCategory>());
+  private final ObservableList<Menu> menuList = FXCollections
+      .observableList(new ArrayList<Menu>());
+  private final ObservableList<MenuCategory> categoryList = FXCollections
+      .observableList(new ArrayList<MenuCategory>());
   private final ReadOnlyBooleanWrapper isMenuCategorySelected = new ReadOnlyBooleanWrapper();
   private MenuCategory selectedMenuCategory;
   private ActionWithParam<MenuCategory> loadMenuForCategoryMethod;
@@ -21,68 +23,70 @@ public class MenuPlanManagementViewModel {
   private ActionWithParam<MenuCategory> deleteMenuCategoryMethod;
   private ActionWithParam<Menu> deleteMenuMethod;
   private Action addMenuCategoryMethod;
-  
+
   public ObservableList<Menu> getMenuList() {
     return menuList;
   }
-  
+
   public ObservableList<MenuCategory> getMenuCategoryList() {
     return categoryList;
   }
-  
-  public void setSelectedMenuCategory(MenuCategory selectedMenuCategory){
+
+  public void setSelectedMenuCategory(MenuCategory selectedMenuCategory) {
     this.selectedMenuCategory = selectedMenuCategory;
     menuList.clear();
-    if(selectedMenuCategory != null){    
+    if (selectedMenuCategory != null) {
       isMenuCategorySelected.set(true);
       loadMenuForCategoryMethod.invoke(selectedMenuCategory);
-    }
-    else{
+    } else {
       isMenuCategorySelected.set(false);
     }
   }
-  
-  public MenuCategory getSelectedMenuCategory(){
+
+  public MenuCategory getSelectedMenuCategory() {
     return selectedMenuCategory;
   }
-  
+
   public ReadOnlyBooleanProperty isMenuCategorySelectedProperty() {
     return isMenuCategorySelected.getReadOnlyProperty();
   }
-  
-  public void addMenuCategory(){
+
+  public void addMenuCategory() {
     addMenuCategoryMethod.invoke();
   }
-  
-public void deleteMenuCategory(MenuCategory category){
+
+  public void deleteMenuCategory(MenuCategory category) {
     deleteMenuCategoryMethod.invoke(category);
   }
-  
-  public void addMenuForCategory(){
+
+  public void addMenuForCategory() {
     addMenuForCategoryMethod.invoke(selectedMenuCategory);
   }
 
-  public void deleteMenu(Menu menu){
+  public void deleteMenu(Menu menu) {
     deleteMenuMethod.invoke(menu);
   }
-  
-  public void setAddMenuCategoryMethod(Action addMenuCategoryMethod){
+
+  public void setAddMenuCategoryMethod(Action addMenuCategoryMethod) {
     this.addMenuCategoryMethod = addMenuCategoryMethod;
   }
-  
-  public void setAddMenuMethod(ActionWithParam<MenuCategory> addMenuForCategoryMethod){
+
+  public void setAddMenuMethod(
+      ActionWithParam<MenuCategory> addMenuForCategoryMethod) {
     this.addMenuForCategoryMethod = addMenuForCategoryMethod;
   }
-    
-  public void setDeleteMenuCategoryMethod(ActionWithParam<MenuCategory> deleteMenuCategoryMethod){
+
+  public void setDeleteMenuCategoryMethod(
+      ActionWithParam<MenuCategory> deleteMenuCategoryMethod) {
     this.deleteMenuCategoryMethod = deleteMenuCategoryMethod;
   }
-  
-  public void setDeleteMenuMethod(ActionWithParam<Menu> deleteMenuMethod){
+
+  public void setDeleteMenuMethod(ActionWithParam<Menu> deleteMenuMethod) {
     this.deleteMenuMethod = deleteMenuMethod;
   }
-   
-  public void setLoadMenuForCategoryMethod(ActionWithParam<MenuCategory> loadMenuForCategoryMethod){
+
+  public void setLoadMenuForCategoryMethod(
+      ActionWithParam<MenuCategory> loadMenuForCategoryMethod) {
     this.loadMenuForCategoryMethod = loadMenuForCategoryMethod;
   }
 }

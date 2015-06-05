@@ -1,6 +1,6 @@
 package at.skert.swe.ue6.integration;
 
-import at.skert.swe.ue6.contracts.IRepository;
+import at.skert.swe.ue6.contracts.data.IRepository;
 import at.skert.swe.ue6.contracts.data.Menu;
 import at.skert.swe.ue6.contracts.data.MenuCategory;
 import at.skert.swe.ue6.data.MenuCategoryRepository;
@@ -37,10 +37,18 @@ public class MenuPlanManagementInteractions {
 
   public void addMenu(MenuCategory category) {
     AddMenuDialog dialog = new AddMenuDialog(menuCategoryRepository.getAll());
-    dialog.setAddMenuMethod(menu -> menuRepository.create(menu,
-        () -> refreshMenuList(), exception -> {
-          // TODO: errorhandling
-      }));
+    dialog
+        .setAddMenuMethod(menu -> menuRepository.create(
+            menu,
+            () -> refreshMenuList(),
+            exception -> {
+              MessageBox
+                  .showErrorDialog(
+                      "Fehler",
+                      "Es ist ein Fehler beim Hinzufügen des Menüs aufgetreten.",
+                      "Das zu speichernde Menu konnte nicht in der Datenbank gespeichert werden, da ein Fehler aufgetreten ist.",
+                      exception);
+            }));
     dialog.showAndWait();
   }
 
@@ -66,12 +74,20 @@ public class MenuPlanManagementInteractions {
 
   public void addMenuCategory() {
     AddMenuCategoryDialog dialog = new AddMenuCategoryDialog();
-    dialog.setAddMenuCategoryMethod(menuCategory -> menuCategoryRepository
-        .create(menuCategory, () -> {
-          refreshMenuCategoryList();
-        }, exception -> {
-          // TODO: errorhandling
-          }));
+    dialog
+        .setAddMenuCategoryMethod(menuCategory -> menuCategoryRepository.create(
+            menuCategory,
+            () -> {
+              refreshMenuCategoryList();
+            },
+            exception -> {
+              MessageBox
+                  .showErrorDialog(
+                      "Fehler",
+                      "Es ist ein Fehler beim Hinzufügen der Kategorie aufgetreten.",
+                      "Die zu speichernde Kategorie konnte nicht in der Datenbank gespeichert werden, da ein Fehler aufgetreten ist.",
+                      exception);
+            }));
     dialog.showAndWait();
   }
 

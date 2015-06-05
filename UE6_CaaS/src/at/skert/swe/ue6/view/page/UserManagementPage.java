@@ -23,19 +23,21 @@ public class UserManagementPage extends AnchorPane {
     this.viewModel = viewModel;
     this.getChildren().addAll(createMenuView());
   }
-  
-  private Pane createMenuView(){
+
+  private Pane createMenuView() {
     VBox pane = new VBox();
-    pane.getChildren().addAll(createTitleHeadBox("Benutzer", createAddButton()), createListView());
+    pane.getChildren().addAll(
+        createTitleHeadBox("Benutzer", createAddButton()), createListView());
     AnchorPane.setTopAnchor(pane, 10.0);
     AnchorPane.setLeftAnchor(pane, 10.0);
     AnchorPane.setRightAnchor(pane, 10.0);
+    AnchorPane.setBottomAnchor(pane, 10.0);
     return pane;
   }
-  
-  private ListView<User> createListView(){
+
+  private ListView<User> createListView() {
     ListView<User> listView = new ListView<User>();
-    listView.setCellFactory(p -> { 
+    listView.setCellFactory(p -> {
       UserListCellWithButtons cell = new UserListCellWithButtons(true, true);
       cell.setEditMethod(user -> viewModel.editUser(user));
       cell.setDeleteMethod(user -> viewModel.deleteUser(user));
@@ -44,28 +46,31 @@ public class UserManagementPage extends AnchorPane {
       return cell;
     });
     listView.setItems(viewModel.getUserList());
+    VBox.setVgrow(listView, Priority.ALWAYS);
     return listView;
   }
-  
-  private Button createAddButton(){
+
+  private Button createAddButton() {
     Button addButton = new Button();
     addButton.setOnAction(event -> {
       this.viewModel.addUser();
-    });    
+    });
     addButton.getStyleClass().addAll("image-button", "add-button");
     AnchorPane.setTopAnchor(addButton, 10.0);
     AnchorPane.setRightAnchor(addButton, 10.0);
     return addButton;
   }
-  
-  private HBox createTitleHeadBox(String title, Button addButton){
+
+  private HBox createTitleHeadBox(String title, Button addButton) {
     Label titleLabel = new Label(title);
     titleLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
     titleLabel.setMaxWidth(Double.MAX_VALUE);
     HBox.setHgrow(titleLabel, Priority.ALWAYS);
     HBox.setHgrow(addButton, Priority.ALWAYS);
     HBox titlePane = new HBox(titleLabel, addButton);
-    titlePane.setPadding(new Insets(10)); 
+    AnchorPane.setTopAnchor(titlePane, 10.0);
+    AnchorPane.setLeftAnchor(titlePane, 10.0);
+    titlePane.setPadding(new Insets(10));
     return titlePane;
   }
 }

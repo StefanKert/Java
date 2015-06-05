@@ -2,6 +2,7 @@ package at.skert.swe.ue6.view.dialog;
 
 import at.skert.swe.ue6.contracts.ActionWithParam;
 import at.skert.swe.ue6.contracts.data.MenuCategory;
+import at.skert.swe.ue6.view.utils.MessageBox;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -18,45 +19,27 @@ import javafx.stage.StageStyle;
 public class AddMenuCategoryDialog {
   private Stage primaryStage;
   private TextField txtName;
-  private Button btnSave;
-  private Button btnCancel;
   private ActionWithParam<MenuCategory> addMenuCategoryMethod;
-
-  public String getName() {
-    return txtName.getText();
-  }
 
   public AddMenuCategoryDialog() {
     this.primaryStage = new Stage();
     this.primaryStage.setTitle("Kategorie hinzufügen");
     this.primaryStage.initStyle(StageStyle.UTILITY);
-
     this.primaryStage.setScene(new Scene(createInputGrid()));
   }
 
   private GridPane createInputGrid() {
     GridPane gridForm = new GridPane();
-    gridForm.getStylesheets().add(getClass().getResource("../css/main.css").toExternalForm());
+    gridForm.getStylesheets().add(
+        getClass().getResource("../css/main.css").toExternalForm());
     gridForm.setHgap(10);
     gridForm.setVgap(10);
     gridForm.setPadding(new Insets(25, 25, 25, 25));
-
-    // Title
     gridForm.add(createTitle(), 0, 0, 2, 1);
-
-    // Name
     gridForm.add(new Label("Name:"), 0, 2);
-    txtName = new TextField();
-    gridForm.add(txtName, 1, 2);
-
-    // Save
+    gridForm.add(createNameTextField(), 1, 2);
     gridForm.add(createSaveButton(), 0, 4);
-
-    // Cancel
-    btnCancel = createButtonCancel();
-    GridPane.setHalignment(btnCancel, HPos.RIGHT);
-    gridForm.add(btnCancel, 1, 4);
-
+    gridForm.add(createButtonCancel(), 1, 4);
     return gridForm;
   }
 
@@ -67,12 +50,19 @@ public class AddMenuCategoryDialog {
     return scenetitle;
   }
 
+  private TextField createNameTextField() {
+    txtName = new TextField();
+    return txtName;
+  }
+
   private Button createSaveButton() {
-    btnSave = new Button("Speichern");
-    btnSave.getStyleClass().addAll("done-button");
+    Button btnSave = new Button("Speichern");
+    btnSave.getStyleClass().addAll("done-white-button");
     btnSave.setOnAction(Event -> {
-      if (txtName.getText().isEmpty())
+      if (txtName.getText().isEmpty()){
+        MessageBox.showErrorDialog("Fehler beim Speichern.", "Es wurde kein Name für die Kategorie angegeben.");
         return;
+      }
 
       addMenuCategoryMethod.invoke(new MenuCategory(txtName.getText()));
       primaryStage.close();
@@ -82,12 +72,12 @@ public class AddMenuCategoryDialog {
   }
 
   private Button createButtonCancel() {
-    btnCancel = new Button("Abbrechen");
-    btnCancel.getStyleClass().addAll("delete-button");
+    Button btnCancel = new Button("Abbrechen");
+    btnCancel.getStyleClass().addAll("delete-white-button");
     btnCancel.setOnAction(Event -> {
       primaryStage.close();
     });
-
+    GridPane.setHalignment(btnCancel, HPos.RIGHT);
     return btnCancel;
   }
 
@@ -95,7 +85,8 @@ public class AddMenuCategoryDialog {
     primaryStage.showAndWait();
   }
 
-  public void setAddMenuCategoryMethod(ActionWithParam<MenuCategory> addMenuCategoryMethod) {
+  public void setAddMenuCategoryMethod(
+      ActionWithParam<MenuCategory> addMenuCategoryMethod) {
     this.addMenuCategoryMethod = addMenuCategoryMethod;
   }
 }

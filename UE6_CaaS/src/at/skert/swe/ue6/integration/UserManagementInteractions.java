@@ -1,6 +1,6 @@
 package at.skert.swe.ue6.integration;
 
-import at.skert.swe.ue6.contracts.IRepository;
+import at.skert.swe.ue6.contracts.data.IRepository;
 import at.skert.swe.ue6.contracts.data.User;
 import at.skert.swe.ue6.data.UserRepository;
 import at.skert.swe.ue6.view.dialog.AddUserDialog;
@@ -29,28 +29,46 @@ public class UserManagementInteractions {
 
   public void showAddUserDialog() {
     AddUserDialog dialog = new AddUserDialog();
-    dialog.setAddUserMethod(user -> userRepository.create(user, () -> {
-      viewModel.getUserList().clear();
-      viewModel.getUserList().addAll(userRepository.getAll());
-    }, exception -> {
-      // TODO: errorhandling
-    }));
+    dialog
+        .setAddUserMethod(user -> userRepository.create(
+            user,
+            () -> {
+              viewModel.getUserList().clear();
+              viewModel.getUserList().addAll(userRepository.getAll());
+            },
+            exception -> {
+              MessageBox
+                  .showErrorDialog(
+                      "Fehler",
+                      "Es ist ein Fehler beim Hinzufügen des Benutzers aufgetreten.",
+                      "Beim Versuch den Benutzer zu Speichern ist ein Fehler aufgetreten, der Benutzer konnte nicht gespeichert werden.",
+                      exception);
+            }));
     dialog.showAndWait();
   }
 
   public void deleteUser(User user) {
-    MessageBox.showConfirmDialog("Achtung", "Wollen Sie den Benutzer " + user.getUsername() + " wirklich löschen? ", () -> {
-    userRepository.delete(user, () -> {
-      refreshUsers();
-    }, exception ->{
-      MessageBox
-      .showErrorDialog(
-          "Fehler",
-          "Es ist ein Fehler beim Löschen des Benutzers aufgetreten.",
-          "Der zu löschende Benutzer wurde nicht in der Datenbank gefunden.",
-          exception);
-    });
-    }, () -> {});
+    MessageBox
+        .showConfirmDialog(
+            "Achtung",
+            "Wollen Sie den Benutzer " + user.getUsername()
+                + " wirklich löschen? ",
+            () -> {
+              userRepository.delete(
+                  user,
+                  () -> {
+                    refreshUsers();
+                  },
+                  exception -> {
+                    MessageBox
+                        .showErrorDialog(
+                            "Fehler",
+                            "Es ist ein Fehler beim Loeschen des Benutzers aufgetreten.",
+                            "Der zu loeschende Benutzer wurde nicht in der Datenbank gefunden.",
+                            exception);
+                  });
+            }, () -> {
+            });
   }
 
   public void deactivateUser(User user) {
@@ -86,8 +104,8 @@ public class UserManagementInteractions {
                 MessageBox
                     .showErrorDialog(
                         "Fehler",
-                        "Es ist ein Fehler beim Aktivieren des Benutzers aufgetreten.",
-                        "Der zu aktivierende Benutzer wurde nicht in der Datenbank gefunden.",
+                        "Es ist ein Fehler beim Speichern des Benutzers aufgetreten.",
+                        "Beim Versuch den Benutzer zu Speichern ist ein Fehler aufgetreten, der Benutzer konnte nicht gespeichert werden.",
                         exception);
               });
         });

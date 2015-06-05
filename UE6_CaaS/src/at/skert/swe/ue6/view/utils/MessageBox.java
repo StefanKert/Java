@@ -14,7 +14,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
 public class MessageBox {
-  public static void showErrorDialog(String title, String headerText, String text, Exception exception){
+  public static void showErrorDialog(String title, String headerText,
+      String text, Exception exception) {
     Alert alert = new Alert(AlertType.ERROR);
     alert.setTitle(title);
     alert.setHeaderText(headerText);
@@ -46,18 +47,27 @@ public class MessageBox {
 
     alert.showAndWait();
   }
+
+  public static void showErrorDialog(String title, String text){
+    Alert alert = new Alert(AlertType.ERROR);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(text);
+    alert.showAndWait();
+  }
   
-  public static void showConfirmDialog(String title, String text, Action onOk, Action onCancel){
+  public static void showConfirmDialog(String title, String text, Action onOk,
+      Action onCancel) {
     Alert alert = new Alert(AlertType.CONFIRMATION);
     alert.setTitle(title);
     alert.setHeaderText(null);
     alert.setContentText(text);
 
     Optional<ButtonType> result = alert.showAndWait();
-    if (result.get() == ButtonType.OK){
-        onOk.invoke();
+    if (result.get() == ButtonType.OK) {
+      onOk.invoke();
     } else {
-        onCancel.invoke();
+      onCancel.invoke();
     }
   }
 }

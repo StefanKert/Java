@@ -1,11 +1,12 @@
 package at.skert.swe.ue6.view.dialog;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import at.skert.swe.ue6.contracts.ActionWithParam;
 import at.skert.swe.ue6.contracts.data.Menu;
 import at.skert.swe.ue6.contracts.data.MenuCategory;
+import at.skert.swe.ue6.utils.Validator;
+import at.skert.swe.ue6.view.utils.MessageBox;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -26,164 +27,160 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class AddMenuDialog {
-    private Stage primaryStage;
-    private TextField txtName;
-    private TextField txtPrice;
-    private CheckBox chkLimited;
-    private DatePicker dateFrom, dateTo;
-    private Button btnSave;
-    private Button btnCancel;
-    private ComboBox<MenuCategory> comboCategory;
-    private ActionWithParam<Menu> addMenuMethod;
+  private Stage primaryStage;
+  private TextField txtName;
+  private TextField txtPrice;
+  private CheckBox chkLimited;
+  private DatePicker dateFrom, dateTo;
+  private ComboBox<MenuCategory> comboCategory;
+  private ActionWithParam<Menu> addMenuMethod;
+  private Validator validator;
 
-    public String getName() {
-        return txtName.getText();
-    }
+  public MenuCategory getSelectedMenuCategory() {
+    return comboCategory.getSelectionModel().getSelectedItem();
+  }
 
-    public double getPrice() {
-        // Ignore input differences (17,10 and 17.10)
-        return Double.valueOf(txtPrice.getText().replace(',', '.'));
-    }
+  public AddMenuDialog(List<MenuCategory> categories) {
+    this.validator = new Validator();
+    this.primaryStage = new Stage();
+    this.primaryStage.setTitle("Hauptspeise hinzufügen");
+    this.primaryStage.initStyle(StageStyle.UTILITY);
+    this.primaryStage.setScene(new Scene(createInputGrid(categories)));
+  }
 
-    public boolean isLimitedToTimePeriod() {
-        return chkLimited.isSelected();
-    }
+  private GridPane createInputGrid(List<MenuCategory> categories) {
+    GridPane gridForm = new GridPane();
+    gridForm.getStylesheets().add(
+        getClass().getResource("../css/main.css").toExternalForm());
+    gridForm.setHgap(10);
+    gridForm.setVgap(10);
+    gridForm.setPadding(new Insets(25, 25, 50, 25));
+    gridForm.add(createTitle(), 0, 0, 2, 1);
+    gridForm.add(new Label("Name:"), 0, 2);
+    gridForm.add(createNameTextField(), 1, 2);
+    gridForm.add(new Label("Preis in Euro:"), 0, 3);
+    gridForm.add(createPriceTextField(), 1, 3);
+    gridForm.add(new Label("Kategorie:"), 0, 4);
+    gridForm.add(createComboBox(categories), 1, 4);
+    gridForm.add(new Label("Zeitlich begrenzt:"), 0, 5);
+    gridForm.add(createCheckboxLimitedToTimePeriod(), 1, 5);
+    gridForm.add(new Label("Von:"), 0, 6);
+    gridForm.add(createDateFromPicker(), 1, 6);
+    gridForm.add(new Label("Bis:"), 0, 7);
+    gridForm.add(createDateToPicker(), 1, 7);
+    gridForm.add(createSaveButton(), 0, 9);
+    gridForm.add(createButtonCancel(), 1, 9);
+    return gridForm;
+  }
 
-    public LocalDate getFrom() {
-        return dateFrom.getValue();
-    }
+  private Text createTitle() {
+    Text scenetitle = new Text("Hauptspeise hinzufügen");
+    scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+    GridPane.setHalignment(scenetitle, HPos.CENTER);
+    return scenetitle;
+  }
 
-    public LocalDate getTo() {
-        return dateTo.getValue();
-    }
-    
-    public MenuCategory getCategory() {
-        return comboCategory.getSelectionModel().getSelectedItem();
-    }
+  private TextField createNameTextField() {
+    txtName = new TextField();
+    return txtName;
+  }
 
-    public AddMenuDialog(List<MenuCategory> categories) {
-        this.primaryStage = new Stage();
-        this.primaryStage.setTitle("Hauptspeise hinzufügen");
-        this.primaryStage.initStyle(StageStyle.UTILITY);
-        
-        this.primaryStage.setScene(new Scene(createInputGrid(categories)));
-    }
+  private TextField createPriceTextField() {
+    txtPrice = new TextField();
+    return txtPrice;
+  }
 
-    private GridPane createInputGrid(List<MenuCategory> categories) {
-        GridPane gridForm = new GridPane();
-        gridForm.getStylesheets().add(getClass().getResource("../css/main.css").toExternalForm());
-        gridForm.setHgap(10);
-        gridForm.setVgap(10);
-        gridForm.setPadding(new Insets(25, 25, 50, 25));
+  private ComboBox<MenuCategory> createComboBox(List<MenuCategory> categories) {
+    comboCategory = new ComboBox<MenuCategory>(
+        FXCollections.observableArrayList(categories));
+    return comboCategory;
+  }
 
-        // Title
-        gridForm.add(createTitle(), 0, 0, 2, 1);
-        
-        // Name
-        gridForm.add(new Label("Name:"), 0, 2);
-        txtName = new TextField();
-        gridForm.add(txtName, 1, 2);
-        
-        // Price
-        gridForm.add(new Label("Preis in €:"), 0, 3);
-        txtPrice = new TextField();
-        gridForm.add(txtPrice, 1, 3);
+  private CheckBox createCheckboxLimitedToTimePeriod() {
+    chkLimited = new CheckBox();
+    chkLimited.selectedProperty().addListener(new ChangeListener<Boolean>() {
+      public void changed(ObservableValue<? extends Boolean> ov,
+          Boolean old_val, Boolean new_val) {
+        dateTo.setDisable(!new_val);
+        dateFrom.setDisable(!new_val);
+      }
+    });
 
-        // Category
-        gridForm.add(new Label("Kategorie:"), 0, 4);
-        comboCategory = new ComboBox<MenuCategory>(FXCollections.observableArrayList(categories));
-        gridForm.add(comboCategory, 1, 4);
-        
-        
-        // Limited to time period
-        gridForm.add(new Label("Zeitlich begrenzt:"), 0, 5);
-        gridForm.add(createCheckboxLimitedToTimePeriod(), 1, 5);
-        
-        // From
-        gridForm.add(new Label("Von:"), 0, 6);
-        dateFrom = new DatePicker();
-        dateFrom.setDisable(true);
-        gridForm.add(dateFrom, 1, 6);
-        
-        // To
-        gridForm.add(new Label("Bis:"), 0, 7);
-        dateTo = new DatePicker();
-        dateTo.setDisable(true);
-        gridForm.add(dateTo, 1, 7);
-        
-        // Save
-        gridForm.add(createSaveButton(), 0, 9); 
-        
-        // Cancel
-        btnCancel = createButtonCancel();
-        GridPane.setHalignment(btnCancel, HPos.RIGHT);
-        gridForm.add(btnCancel, 1, 9);
-        
-        return gridForm;
-    }
+    return chkLimited;
+  }
 
-    private Button createSaveButton() {
-        btnSave = new Button("Speichern");
-        btnSave.getStyleClass().addAll("done-button");
-        btnSave.setOnAction(Event -> {
-                if(txtName.getText().isEmpty() || txtPrice.getText().isEmpty() || !isPriceValid()
-                        || comboCategory.getSelectionModel().getSelectedItem() == null
-                        || (chkLimited.isSelected() && (dateFrom.getValue() == null || dateTo.getValue() == null)))
-                    return;
-                
-                addMenuMethod.invoke(new Menu(getName(), getPrice(), getCategory(), getFrom(), getTo()));
-                primaryStage.close();                       
-          });   
-        
-        return btnSave;
-    }
+  private DatePicker createDateFromPicker() {
+    dateFrom = new DatePicker();
+    dateFrom.setDisable(true);
+    return dateFrom;
+  }
 
-    private Button createButtonCancel() {
-        btnCancel = new Button("Abbrechen");
-        btnCancel.getStyleClass().addAll("delete-button");
-        GridPane.setHalignment(btnCancel, HPos.RIGHT);
-        btnCancel.setOnAction(Event -> {
-                primaryStage.close();
-        });
-        
-        return btnCancel;
-    }
+  private DatePicker createDateToPicker() {
+    dateTo = new DatePicker();
+    dateTo.setDisable(true);
+    return dateTo;
+  }
 
-    private CheckBox createCheckboxLimitedToTimePeriod() {
-        chkLimited = new CheckBox();
-        
-        chkLimited.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            public void changed(ObservableValue<? extends Boolean> ov,
-                    Boolean old_val, Boolean new_val) {
-                        dateTo.setDisable(!new_val);
-                        dateFrom.setDisable(!new_val);
-                }
-            });
-        
-        return chkLimited;
-    }
-    
-    private Text createTitle() {
-        Text scenetitle = new Text("Hauptspeise hinzufügen");
-        scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        GridPane.setHalignment(scenetitle, HPos.CENTER);
-        return scenetitle;
-    }
+  private Button createSaveButton() {
+    Button btnSave = new Button("Speichern");
+    btnSave.getStyleClass().addAll("done-white-button");
+    btnSave.setOnAction(Event -> {
+      if (!isDialogValid())
+        return;
 
-    private boolean isPriceValid() {
-        try {
-            getPrice();
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-    
-    public void showAndWait() {
-        primaryStage.showAndWait();
-    }
+      addMenuMethod.invoke(new Menu(txtName.getText(), Double.valueOf(txtPrice
+          .getText().replace(',', '.')), getSelectedMenuCategory(), dateFrom
+          .getValue(), dateTo.getValue()));
+      primaryStage.close();
+    });
 
-    public void setAddMenuMethod(ActionWithParam<Menu> addMenuMethod) {
-      this.addMenuMethod = addMenuMethod;
-    }
+    return btnSave;
+  }
+
+  private boolean isDialogValid() {
+    if (txtName.getText().isEmpty()
+        || txtPrice.getText().isEmpty()
+        || !validator.isDoubleValid(txtPrice.getText())
+        || getSelectedMenuCategory() == null
+        || (chkLimited.isSelected() && (dateFrom.getValue() == null || dateTo
+            .getValue() == null))) {
+      String message = "Die folgenden falschen Angaben wurden erkannt:\n";
+      if (txtName.getText().isEmpty())
+        message += "\nEs wurde kein Name angegeben.";
+      if (txtPrice.getText().isEmpty())
+        message += "\nEs wurde kein Preis angegeben.";
+      if (!validator.isDoubleValid(txtPrice.getText()))
+        message += "\nBitte geben Sie für den Preis nur eine gültige Zahl ein.";
+      if(getSelectedMenuCategory() == null)
+        message += "\nSie haben keine Kategorie ausgewählt.";
+      if(chkLimited.isSelected()){
+        if (dateFrom.getValue() == null)
+          message += "\nEs wurde kein Von-Zeit angegeben.";
+        if (dateTo.getValue() == null)
+          message += "\nEs wurde kein Bis-Zeit angegeben."; 
+      }
+      MessageBox.showErrorDialog("Fehler beim Speichern.", message);
+      return false;
+    } else
+      return true;
+  }
+
+  private Button createButtonCancel() {
+    Button btnCancel = new Button("Abbrechen");
+    btnCancel.getStyleClass().addAll("delete-white-button");
+    GridPane.setHalignment(btnCancel, HPos.RIGHT);
+    btnCancel.setOnAction(Event -> {
+      primaryStage.close();
+    });
+
+    return btnCancel;
+  }
+
+  public void showAndWait() {
+    primaryStage.showAndWait();
+  }
+
+  public void setAddMenuMethod(ActionWithParam<Menu> addMenuMethod) {
+    this.addMenuMethod = addMenuMethod;
+  }
 }

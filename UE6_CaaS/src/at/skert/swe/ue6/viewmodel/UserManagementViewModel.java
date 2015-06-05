@@ -8,7 +8,8 @@ import at.skert.swe.ue6.contracts.ActionWithParam;
 import at.skert.swe.ue6.contracts.data.User;
 
 public class UserManagementViewModel {
-  private final ObservableList<User> userList = FXCollections.observableList(new ArrayList<User>()); 
+  private final ObservableList<User> userList = FXCollections
+      .observableList(new ArrayList<User>());
 
   private Action addUserMethod;
   private ActionWithParam<User> editUserMethod;
@@ -16,47 +17,47 @@ public class UserManagementViewModel {
   private ActionWithParam<User> deactivateUserMethod;
   private ActionWithParam<User> activateUserMethod;
 
-  public void addUser(){
+  public void addUser() {
     addUserMethod.invoke();
   }
-  
-  public void editUser(User user){
+
+  public void editUser(User user) {
     editUserMethod.invoke(user);
   }
-  
-  public void deleteUser(User user){
+
+  public void deleteUser(User user) {
     deleteUserMethod.invoke(user);
   }
-  
-  public void deactivateUser(User user){
+
+  public void deactivateUser(User user) {
     deactivateUserMethod.invoke(user);
   }
-  
-  public void activateUser(User user){
+
+  public void activateUser(User user) {
     activateUserMethod.invoke(user);
-  }  
-  
+  }
+
   public ObservableList<User> getUserList() {
     return userList;
   }
-  
-  public void setAddUserMethod(Action addUserMethod){
+
+  public void setAddUserMethod(Action addUserMethod) {
     this.addUserMethod = addUserMethod;
   }
-  
-  public void setEditUserMethod(ActionWithParam<User> editUserMethod){
+
+  public void setEditUserMethod(ActionWithParam<User> editUserMethod) {
     this.editUserMethod = editUserMethod;
   }
-  
-  public void setDeletUserMethod(ActionWithParam<User> deleteUserMethod){
+
+  public void setDeletUserMethod(ActionWithParam<User> deleteUserMethod) {
     this.deleteUserMethod = deleteUserMethod;
   }
 
-  public void setDeactivateUserMethod(ActionWithParam<User> deactivateUserMethod){
+  public void setDeactivateUserMethod(ActionWithParam<User> deactivateUserMethod) {
     this.deactivateUserMethod = deactivateUserMethod;
   }
-  
-  public void setActivateUserMethod(ActionWithParam<User> activateUserMethod){
+
+  public void setActivateUserMethod(ActionWithParam<User> activateUserMethod) {
     this.activateUserMethod = activateUserMethod;
   }
 }

@@ -1,6 +1,7 @@
 package at.skert.swe.ue6.view;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 import javafx.application.Application;
@@ -21,52 +22,63 @@ import at.skert.swe.ue6.integration.UserManagementInteractions;
 import at.skert.swe.ue6.view.page.MenuPlanManagementPage;
 import at.skert.swe.ue6.view.page.OrderPage;
 import at.skert.swe.ue6.view.page.UserManagementPage;
+import at.skert.swe.ue6.viewmodel.OrderViewModel;
 
 public class MainView extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
     TabPane tabPane = new TabPane();
-    tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE); 
-    tabPane.getTabs().addAll(createOrderTab(), createUserManagementTab(), createMenuPlanManagementPage());
-    Scene scene = new Scene(tabPane, 500, 500);
-    scene.getStylesheets().add(getClass().getResource("css/main.css").toExternalForm());
+    tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+    tabPane.getTabs().addAll(createOrderTab(), createUserManagementTab(),
+        createMenuPlanManagementPage());
+    Scene scene = new Scene(tabPane, 600, 600);
+    scene.getStylesheets().add(
+        getClass().getResource("css/main.css").toExternalForm());
     primaryStage.setScene(scene);
-    primaryStage.setMinWidth(140);
-    primaryStage.setMinHeight(160);
+    primaryStage.setMinWidth(600);
+    primaryStage.setMinHeight(600);
     primaryStage.setTitle("CaaS - Administration");
     primaryStage.show();
   }
-  
-  private Tab createOrderTab(){
+
+  private Tab createOrderTab() {
     Tab tab = new Tab("Bestellungen");
-    OrderRepository orderRepository = new OrderRepository(new MenuRepository(new MenuCategoryRepository()), new UserRepository());
-    OrderPage control = new OrderPage(orderRepository.getAll().stream().filter(o -> o.getDate().equals(LocalDate.now())).collect(Collectors.toList()));
+    OrderRepository orderRepository = new OrderRepository(new MenuRepository(
+        new MenuCategoryRepository()), new UserRepository());
+    OrderViewModel viewModel = new OrderViewModel();
+    viewModel.getOrderList().addAll(
+        orderRepository.getAll().stream()
+            .filter(o -> o.getDateTime().format(DateTimeFormatter.BASIC_ISO_DATE).equals(LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE)))
+            .collect(Collectors.toList()));
+    OrderPage control = new OrderPage(viewModel);
     HBox.setHgrow(control, Priority.ALWAYS);
     VBox.setVgrow(control, Priority.ALWAYS);
     tab.setContent(control);
     return tab;
   }
-  
-  private Tab createUserManagementTab(){
+
+  private Tab createUserManagementTab() {
     Tab tab = new Tab("Benutzerverwaltung");
-    UserManagementPage control = new UserManagementPage(new UserManagementInteractions().getIntegratedViewModel());
+    UserManagementPage control = new UserManagementPage(
+        new UserManagementInteractions().getIntegratedViewModel());
     HBox.setHgrow(control, Priority.ALWAYS);
     VBox.setVgrow(control, Priority.ALWAYS);
     tab.setContent(control);
     return tab;
   }
-  
-  private Tab createMenuPlanManagementPage(){
+
+  private Tab createMenuPlanManagementPage() {
     Tab tab = new Tab("Menüverwaltung");
-    MenuPlanManagementPage control = new MenuPlanManagementPage(new MenuPlanManagementInteractions().getIntegratedViewModel());
+    MenuPlanManagementPage control = new MenuPlanManagementPage(
+        new MenuPlanManagementInteractions().getIntegratedViewModel());
     HBox.setHgrow(control, Priority.ALWAYS);
     VBox.setVgrow(control, Priority.ALWAYS);
     tab.setContent(control);
     return tab;
   }
-  
-  public static void main(String[] args){
+
+  public static void main(String[] args) {
     launch();
   }
 }
