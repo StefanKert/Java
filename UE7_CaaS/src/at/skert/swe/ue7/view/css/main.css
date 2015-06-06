@@ -1,0 +1,53 @@
+
+.add-button {
+  -fx-graphic: url('add-black.png');
+}
+
+.lock-button {
+  -fx-graphic: url('lock-black.png');
+}
+
+.unlock-button {
+  -fx-graphic: url('unlock-black.png');
+}
+
+.edit-button {
+  -fx-graphic: url('edit-black.png');
+}
+
+.delete-button {
+  -fx-graphic: url('delete-black.png');
+}
+
+.delete-white-button {
+  -fx-graphic: url('delete-white.png');
+  -fx-background-color: #b22222;
+  -fx-text-fill: #ffffff;
+}
+.delete-white-button:hover {
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, black, 10, 0, 0, 0.5);
+}
+
+.done-button {
+  -fx-graphic: url('done-black.png');
+}
+
+.done-white-button {
+  -fx-graphic: url('done-white.png');
+  -fx-background-color: green;//#33CD5F;
+  -fx-text-fill: #ffffff;
+}
+.done-white-button:hover {
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, black, 10, 0, 0, 0.5);
+}
+
+.image-button {
+  -fx-background-color: transparent;	
+}
+
+.image-button:hover {
+  -fx-cursor: hand;
+  -fx-effect: innershadow(one-pass-box, black, 3, 0, 0, 0.5); 
+}
