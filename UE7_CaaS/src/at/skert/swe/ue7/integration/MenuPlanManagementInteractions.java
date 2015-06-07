@@ -112,19 +112,12 @@ public class MenuPlanManagementInteractions {
 
   public void loadMenuForCategory(MenuCategory category) {
     viewModel.getMenuList().clear();
-    viewModel.getMenuList()
-        .addAll(
-            menuRepository
-                .getAllByPredicate(x -> x.getCategory().getId() == category
-                    .getId()));
+    viewModel.getMenuList().addAll( menuRepository .getAllByPredicate(x -> x.getCategory().getId() == category.getId()));
   }
 
   public void refreshMenuList() {
     viewModel.getMenuList().clear();
-    viewModel.getMenuList().addAll(
-        menuRepository
-            .getAllByPredicate(x -> x.getCategory().getId() == viewModel
-                .getSelectedMenuCategory().getId()));
+    viewModel.getMenuList().addAll(menuRepository.getAllByPredicate(x -> x.getCategory().getId() == viewModel.getSelectedMenuCategory().getId()));
   }
 
   public void refreshMenuCategoryList() {

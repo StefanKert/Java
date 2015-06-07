@@ -10,4 +10,5 @@ public interface IRemoteRepository extends Remote {
   void update(IEntity entity) throws RemoteException;
   void delete(IEntity entity) throws RemoteException;
   <T extends IEntity> List<T> getAllForType(Type type) throws RemoteException;
+  void registerConsumer(ICaaSConsumer consumer)  throws RemoteException;
 }
