@@ -12,6 +12,17 @@ public class User implements IEntity {
 
   public User(String username, String password, String firstname,
       String lastname, boolean activated) {
+    this.id = -1;
+    this.firstname = firstname;
+    this.lastname = lastname;
+    this.username = username;
+    this.password = password;
+    this.activated = activated;
+  }
+  
+  public User(long id, String username, String password, String firstname,
+      String lastname, boolean activated) {
+    this.id = id;
     this.firstname = firstname;
     this.lastname = lastname;
     this.username = username;

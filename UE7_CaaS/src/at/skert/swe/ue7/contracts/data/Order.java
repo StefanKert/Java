@@ -10,7 +10,16 @@ public class Order implements IEntity {
   private User user;
   private LocalDateTime dateTime;
   
+  public Order(long id, Menu menu, User user, LocalDateTime dateTime) {
+    this.id = id;
+    this.menu = menu;
+    this.user = user;
+    this.dateTime = dateTime;
+  }
+
+  
   public Order(Menu menu, User user, LocalDateTime dateTime) {
+    this.id = -1;
     this.menu = menu;
     this.user = user;
     this.dateTime = dateTime;

@@ -251,6 +251,7 @@ public class RemoteRepository implements IRemoteRepository {
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public <T extends IEntity> List<T> getAllForType(Type type)
       throws RemoteException {

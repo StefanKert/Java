@@ -20,18 +20,14 @@ import at.skert.swe.ue7.data.remote.RemoteRepository;
 
 public class RmiService {
 
-  public static void main(String[] args) throws RemoteException, MalformedURLException {
+  public static void launch() throws RemoteException, MalformedURLException {
     String hostPort = "localhost:1099";
     System.out.println("Starting internal rmi registry");
     LocateRegistry.createRegistry(1099);
     MenuCategoryRepository menuCategoryRepository = new MenuCategoryRepository();
-    menuCategoryRepository.create(new MenuCategory("RMI Menükategorie"), () -> {}, exception -> {});
     MenuRepository menuRepository = new MenuRepository(new MenuCategoryRepository());
-    menuRepository.create(new Menu("RMI Menü", 12.0, menuCategoryRepository.getAll().get(0)), () -> {}, exception -> {});
     UserRepository userRepository = new UserRepository();
-    userRepository.create(new User("TesterÜberRMI", "PasswordüberRMI", "RMI", "RIMINI", true), () -> {}, exception -> {});
     OrderRepository orderRepository = new OrderRepository(menuRepository, userRepository);
-    orderRepository.create(new Order(menuRepository.getAll().get(0), userRepository.getAll().get(0), LocalDateTime.now()), () -> {}, exception -> {});
     RemoteRepository menu = new RemoteRepository(menuRepository, menuCategoryRepository, userRepository, orderRepository);
     IRemoteRepository menuRepositoryStub = (IRemoteRepository) UnicastRemoteObject.exportObject(menu, 0);
     Naming.rebind("rmi://" + hostPort + "/RepositoryService", menuRepositoryStub);

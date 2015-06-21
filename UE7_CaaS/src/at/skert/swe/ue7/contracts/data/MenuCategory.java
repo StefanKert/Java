@@ -6,7 +6,13 @@ public class MenuCategory implements IEntity {
   private long id;
   private String name;
 
+  public MenuCategory(long id, String name) {
+    this.id = id;
+    this.name = name;
+  }
+  
   public MenuCategory(String name) {
+    this.id = -1;
     this.name = name;
   }
 

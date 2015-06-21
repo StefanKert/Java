@@ -1,4 +1,4 @@
-package at.skert.swe.ue7.view;
+package at.skert.swe.ue7;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -27,14 +27,21 @@ import at.skert.swe.ue7.contracts.data.User;
 import at.skert.swe.ue7.data.remote.GenericRemoteRepositoryConsumer;
 import at.skert.swe.ue7.integration.MenuPlanManagementInteractions;
 import at.skert.swe.ue7.integration.UserManagementInteractions;
+import at.skert.swe.ue7.view.UpdateLogic;
 import at.skert.swe.ue7.view.page.MenuPlanManagementPage;
 import at.skert.swe.ue7.view.page.OrderPage;
 import at.skert.swe.ue7.view.page.UserManagementPage;
 import at.skert.swe.ue7.viewmodel.OrderViewModel;
 
-public class RemoteMainView extends Application {
+
+public class CaaSView extends Application {
   private IRemoteRepository repository;
   private UpdateLogic logic;
+  
+  public static void main(String[] args) {
+    launch(args);
+  }
+  
   @Override
   public void start(Stage primaryStage) throws Exception {
     repository = (IRemoteRepository) Naming.lookup("rmi://localhost:1099/RepositoryService");
@@ -43,18 +50,17 @@ public class RemoteMainView extends Application {
     repository.registerConsumer(logic);
     TabPane tabPane = new TabPane();
     tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-    tabPane.getTabs().addAll(createOrderTab(), createUserManagementTab(),
-        createMenuPlanManagementPage());
+    tabPane.getTabs().addAll(createOrderTab(), createUserManagementTab(), createMenuPlanManagementPage());
     Scene scene = new Scene(tabPane, 600, 600);
     scene.getStylesheets().add(
-        getClass().getResource("css/main.css").toExternalForm());
+        getClass().getResource("view/css/main.css").toExternalForm());
     primaryStage.setScene(scene);
     primaryStage.setMinWidth(600);
     primaryStage.setMinHeight(600);
     primaryStage.setTitle("CaaS - Administration");
     primaryStage.show();
   }
-
+  
   private Tab createOrderTab() {
     Tab tab = new Tab("Bestellungen");
     IRepository<Order> orderRepository = new GenericRemoteRepositoryConsumer<Order>(Order.class, repository);
@@ -103,9 +109,5 @@ public class RemoteMainView extends Application {
     VBox.setVgrow(control, Priority.ALWAYS);
     tab.setContent(control);
     return tab;
-  }
-  
-  public static void main(String[] args) {
-    launch();
   }
 }

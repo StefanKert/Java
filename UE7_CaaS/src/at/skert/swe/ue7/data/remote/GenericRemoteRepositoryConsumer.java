@@ -1,7 +1,5 @@
 package at.skert.swe.ue7.data.remote;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.rmi.RemoteException;
 import java.util.ArrayList;

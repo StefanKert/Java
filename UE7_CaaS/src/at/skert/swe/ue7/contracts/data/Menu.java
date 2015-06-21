@@ -12,6 +12,7 @@ public class Menu implements IEntity {
   private LocalDate beginDate, endDate;
 
   public Menu(String name, double price, MenuCategory category) {
+    this.id = -1;
     this.name = name;
     this.price = price;
     this.category = category;
@@ -20,6 +21,20 @@ public class Menu implements IEntity {
   public Menu(String name, double price, MenuCategory category,
       LocalDate begin, LocalDate end) {
     this(name, price, category);
+    this.beginDate = begin;
+    this.endDate = end;
+  }  
+
+  public Menu(long id, String name, double price, MenuCategory category) {
+    this.id = id;
+    this.name = name;
+    this.price = price;
+    this.category = category;
+  }
+  
+  public Menu(long id, String name, double price, MenuCategory category,
+      LocalDate begin, LocalDate end) {
+    this(id, name, price, category);
     this.beginDate = begin;
     this.endDate = end;
   }
