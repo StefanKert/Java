@@ -5,9 +5,9 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.time.LocalDateTime;
 
 import at.skert.swe.ue7.contracts.data.IRemoteRepository;
+import at.skert.swe.ue7.contracts.data.IRepository;
 import at.skert.swe.ue7.contracts.data.Menu;
 import at.skert.swe.ue7.contracts.data.MenuCategory;
 import at.skert.swe.ue7.contracts.data.Order;
@@ -20,17 +20,26 @@ import at.skert.swe.ue7.data.remote.RemoteRepository;
 
 public class RmiService {
 
-  public static void launch() throws RemoteException, MalformedURLException {
+  private IRepository<MenuCategory> menuCategoryRepository;
+  private IRepository<Menu> menuRepository;
+  private IRepository<User> userRepository;
+  private IRepository<Order> orderRepository;
+  private RemoteRepository remoteRepository;
+
+  public RmiService(){
+    menuCategoryRepository = new MenuCategoryRepository();
+    menuRepository = new MenuRepository(new MenuCategoryRepository());
+    userRepository = new UserRepository();
+    orderRepository = new OrderRepository(menuRepository, userRepository);
+    remoteRepository = new RemoteRepository(menuRepository, menuCategoryRepository, userRepository, orderRepository);
+  }
+  
+  public void launch() throws RemoteException, MalformedURLException {
     String hostPort = "localhost:1099";
     System.out.println("Starting internal rmi registry");
     LocateRegistry.createRegistry(1099);
-    MenuCategoryRepository menuCategoryRepository = new MenuCategoryRepository();
-    MenuRepository menuRepository = new MenuRepository(new MenuCategoryRepository());
-    UserRepository userRepository = new UserRepository();
-    OrderRepository orderRepository = new OrderRepository(menuRepository, userRepository);
-    RemoteRepository menu = new RemoteRepository(menuRepository, menuCategoryRepository, userRepository, orderRepository);
-    IRemoteRepository menuRepositoryStub = (IRemoteRepository) UnicastRemoteObject.exportObject(menu, 0);
-    Naming.rebind("rmi://" + hostPort + "/RepositoryService", menuRepositoryStub);
+    IRemoteRepository remoteRepositoryStub = (IRemoteRepository) UnicastRemoteObject.exportObject(remoteRepository, 0);
+    Naming.rebind("rmi://" + hostPort + "/CaaSService", remoteRepositoryStub);
     System.out.println("RepositoryService running, waiting for connections");
   }
 }

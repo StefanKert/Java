@@ -2,17 +2,19 @@ package at.skert.swe.ue7.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import at.skert.swe.ue7.contracts.data.User;
 
 public class UserRepository extends AbstractRepository<User> {
 
   @Override
-  protected String getGetAllStatement() {
-    return "SELECT * FROM Users";
+  protected String getTableName(){
+    return "Users";
   }
+  
   @Override
   protected String getInsertStatement() {
-    return "INSERT INTO users (Username, Password, Firstname, Lastname, Activated) values (?, ?, ?, ?, ?)";
+    return String.format("INSERT INTO %s (Username, Password, Firstname, Lastname, Activated) values (?, ?, ?, ?, ?)", getTableName());
   }
 
   @Override
@@ -23,7 +25,7 @@ public class UserRepository extends AbstractRepository<User> {
 
   @Override
   protected String getUpdateStatement() {
-    return "UPDATE Users SET Username = ?, Password = ?, Firstname = ?, Lastname = ?, Activated = ? WHERE Id = ?";
+    return String.format("UPDATE %s SET Username = ?, Password = ?, Firstname = ?, Lastname = ?, Activated = ? WHERE Id = ?", getTableName());
   }
 
   @Override
@@ -34,18 +36,8 @@ public class UserRepository extends AbstractRepository<User> {
   }
 
   @Override
-  protected String getDeleteStatement() {
-    return "DELETE FROM Users WHERE Id = ?";
-  }
-
-  @Override
-  protected Object[] getDeleteArguments(User entity) {
-    return new Object[] { entity.getId() };
-  }
-
-  @Override
   protected String getGetByIdStatement() {
-    return "SELECT * FROM Users WHERE Id = ?";
+    return String.format("SELECT * FROM %s WHERE Id = ?", getTableName());
   }
 
   @Override

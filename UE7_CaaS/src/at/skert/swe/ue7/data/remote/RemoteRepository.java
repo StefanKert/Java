@@ -79,6 +79,7 @@ public class RemoteRepository implements IRemoteRepository {
     this.userRepository.create(user, () -> {
       notifyAllConsumers(consumer -> {
         try {
+          System.out.println("Try to update consumers");
           consumer.usersUpdated();
         } catch (Exception e) {
           throw new RuntimeException(e);

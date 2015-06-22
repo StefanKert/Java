@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -12,8 +11,6 @@ import at.skert.swe.ue7.contracts.Action;
 import at.skert.swe.ue7.contracts.ActionWithParam;
 import at.skert.swe.ue7.contracts.data.IEntity;
 import at.skert.swe.ue7.contracts.data.IRepository;
-import at.skert.swe.ue7.contracts.data.User;
-import at.skert.swe.ue7.contracts.exceptions.EntityNotAddedException;
 
 public abstract class AbstractRepository<T extends IEntity> implements
     IRepository<T> {
@@ -30,7 +27,7 @@ public abstract class AbstractRepository<T extends IEntity> implements
   @Override
   public List<T> getAll() {
     List<T> entities = new ArrayList<T>();
-    dataAccessProvider.ExecuteQuery(getGetAllStatement(), resultSet -> {
+    dataAccessProvider.ExecuteQuery(String.format("SELECT * FROM %s", getTableName()), resultSet -> {
       try {
         while (resultSet.next()) {
           entities.add(getEntityForResultSetEntry(resultSet));
@@ -42,11 +39,9 @@ public abstract class AbstractRepository<T extends IEntity> implements
     }, e -> {
       System.err.println(e); // Log error to console output and swallow it.
                              // Return empty list instead
-      });
+    });
     return entities;
   }
-
-  protected abstract String getGetAllStatement();
 
   @Override
   public List<T> getAllByPredicate(Predicate<? super T> predicate) {
@@ -61,6 +56,7 @@ public abstract class AbstractRepository<T extends IEntity> implements
     dataAccessProvider.ExecuteUpdate(getInsertStatement(), (resultSet) -> {
       try {
         fillEntityWithKey(entity, resultSet);
+        onSuccess.invoke();
       } catch (Exception ex) {
         onError.invoke(ex);
       }
@@ -89,13 +85,8 @@ public abstract class AbstractRepository<T extends IEntity> implements
       ActionWithParam<Exception> onError) {
     if (entity.getId() == -1)
       onError.invoke(new Exception("Entity not added yet can't be updated."));
-    dataAccessProvider.ExecuteUpdate(getDeleteStatement(), onSuccess, onError,
-        getDeleteArguments(entity));
+    dataAccessProvider.ExecuteUpdate(String.format("DELETE FROM %s WHERE Id = ?", getTableName()), onSuccess, onError, entity.getId());
   }
-
-  protected abstract String getDeleteStatement();
-
-  protected abstract Object[] getDeleteArguments(T entity);
 
   @Override
   public void getById(long id, ActionWithParam<T> continueWith,
@@ -124,4 +115,6 @@ public abstract class AbstractRepository<T extends IEntity> implements
     else
       throw new Exception("Auto generated keys not supported.");
   }
+
+  protected abstract String getTableName();
 }

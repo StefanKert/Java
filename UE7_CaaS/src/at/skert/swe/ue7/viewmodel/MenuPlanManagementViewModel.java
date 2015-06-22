@@ -23,6 +23,7 @@ public class MenuPlanManagementViewModel {
   private ActionWithParam<MenuCategory> deleteMenuCategoryMethod;
   private ActionWithParam<Menu> deleteMenuMethod;
   private Action addMenuCategoryMethod;
+  private Action loadMenuCategoriesMethod;
 
   public ObservableList<Menu> getMenuList() {
     return menuList;
@@ -66,6 +67,15 @@ public class MenuPlanManagementViewModel {
   public void deleteMenu(Menu menu) {
     deleteMenuMethod.invoke(menu);
   }
+  
+  public void refreshMenuCategories(){
+    loadMenuCategoriesMethod.invoke();
+  }
+  
+  public void refreshMenus(){
+    if(getSelectedMenuCategory() != null)
+      loadMenuForCategoryMethod.invoke(getSelectedMenuCategory());
+  }
 
   public void setAddMenuCategoryMethod(Action addMenuCategoryMethod) {
     this.addMenuCategoryMethod = addMenuCategoryMethod;
@@ -83,6 +93,11 @@ public class MenuPlanManagementViewModel {
 
   public void setDeleteMenuMethod(ActionWithParam<Menu> deleteMenuMethod) {
     this.deleteMenuMethod = deleteMenuMethod;
+  }
+  
+  public void setLoadMenuCategoriesMethod(
+      Action loadMenuCategoriesMethod) {
+    this.loadMenuCategoriesMethod = loadMenuCategoriesMethod;
   }
 
   public void setLoadMenuForCategoryMethod(

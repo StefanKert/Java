@@ -8,13 +8,13 @@ import at.skert.swe.ue7.contracts.data.MenuCategory;
 public class MenuCategoryRepository extends AbstractRepository<MenuCategory> {
 
   @Override
-  protected String getGetAllStatement() {
-    return "SELECT * FROM MenuCategories";
+  protected String getTableName(){
+    return "MenuCategories";
   }
 
   @Override
   protected String getInsertStatement() {
-    return "INSERT INTO MenuCategories (Name) values (?)";
+    return String.format("INSERT INTO %s (Name) values (?)", getTableName());
   }
 
   @Override
@@ -24,22 +24,12 @@ public class MenuCategoryRepository extends AbstractRepository<MenuCategory> {
 
   @Override
   protected String getUpdateStatement() {
-    return "UPDATE MenuCategories SET Name = ? WHERE Id = ?";
+    return String.format("UPDATE %s SET Name = ? WHERE Id = ?", getTableName());
   }
 
   @Override
   protected Object[] getUpdateArguments(MenuCategory entity) {
     return new Object[] { entity.getName(), entity.getId() };
-  }
-
-  @Override
-  protected String getDeleteStatement() {
-    return "DELETE FROM MenuCategories WHERE Id = ?";
-  }
-
-  @Override
-  protected Object[] getDeleteArguments(MenuCategory entity) {
-    return new Object[] { entity.getId() };
   }
 
   @Override

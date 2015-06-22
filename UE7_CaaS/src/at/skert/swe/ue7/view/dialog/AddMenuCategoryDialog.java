@@ -65,7 +65,6 @@ public class AddMenuCategoryDialog {
       }
 
       addMenuCategoryMethod.invoke(new MenuCategory(txtName.getText()));
-      primaryStage.close();
     });
 
     return btnSave;
@@ -88,5 +87,8 @@ public class AddMenuCategoryDialog {
   public void setAddMenuCategoryMethod(
       ActionWithParam<MenuCategory> addMenuCategoryMethod) {
     this.addMenuCategoryMethod = addMenuCategoryMethod;
+  }
+  public void close(){
+    primaryStage.close();
   }
 }

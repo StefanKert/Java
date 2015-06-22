@@ -5,8 +5,9 @@ import java.rmi.RemoteException;
 
 import at.skert.swe.ue7.rmi.RmiService;
 
-public class CaaSRMIServer {
+public class CaaSRmiServer {
   public static void main(String[] args) throws RemoteException, MalformedURLException {
-    RmiService.launch();
+    RmiService rmiService = new RmiService();
+    rmiService.launch();
   }
 }

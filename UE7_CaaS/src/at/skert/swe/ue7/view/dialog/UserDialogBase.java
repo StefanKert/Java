@@ -123,4 +123,7 @@ public abstract class UserDialogBase {
   public void showAndWait() {
     primaryStage.showAndWait();
   }
+  public void close(){
+    primaryStage.close();
+  }
 }

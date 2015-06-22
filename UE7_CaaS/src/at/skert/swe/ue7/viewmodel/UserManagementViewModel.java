@@ -18,6 +18,8 @@ public class UserManagementViewModel {
   private ActionWithParam<User> deactivateUserMethod;
   private ActionWithParam<User> activateUserMethod;
 
+  private Action refreshUsersMethod;
+
   public void addUser() {
     addUserMethod.invoke();
   }
@@ -36,6 +38,10 @@ public class UserManagementViewModel {
 
   public void activateUser(User user) {
     activateUserMethod.invoke(user);
+  }
+  
+  public void refreshUses(){
+    refreshUsersMethod.invoke();
   }
 
   public ObservableList<User> getUserList() {
@@ -60,5 +66,9 @@ public class UserManagementViewModel {
 
   public void setActivateUserMethod(ActionWithParam<User> activateUserMethod) {
     this.activateUserMethod = activateUserMethod;
+  }
+  
+  public void setRefreshUsersMethod(Action refreshUsersMethod) {
+    this.refreshUsersMethod = refreshUsersMethod;
   }
 }

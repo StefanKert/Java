@@ -25,12 +25,13 @@ import at.skert.swe.ue7.contracts.data.MenuCategory;
 import at.skert.swe.ue7.contracts.data.Order;
 import at.skert.swe.ue7.contracts.data.User;
 import at.skert.swe.ue7.data.remote.GenericRemoteRepositoryConsumer;
+import at.skert.swe.ue7.data.remote.UpdateLogic;
 import at.skert.swe.ue7.integration.MenuPlanManagementInteractions;
 import at.skert.swe.ue7.integration.UserManagementInteractions;
-import at.skert.swe.ue7.view.UpdateLogic;
 import at.skert.swe.ue7.view.page.MenuPlanManagementPage;
 import at.skert.swe.ue7.view.page.OrderPage;
 import at.skert.swe.ue7.view.page.UserManagementPage;
+import at.skert.swe.ue7.view.utils.MessageBox;
 import at.skert.swe.ue7.viewmodel.OrderViewModel;
 
 
@@ -44,10 +45,7 @@ public class CaaSView extends Application {
   
   @Override
   public void start(Stage primaryStage) throws Exception {
-    repository = (IRemoteRepository) Naming.lookup("rmi://localhost:1099/RepositoryService");
-    logic = new UpdateLogic();
-    UnicastRemoteObject.exportObject(logic, 0);
-    repository.registerConsumer(logic);
+    connectToRmiService();
     TabPane tabPane = new TabPane();
     tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
     tabPane.getTabs().addAll(createOrderTab(), createUserManagementTab(), createMenuPlanManagementPage());
@@ -59,6 +57,18 @@ public class CaaSView extends Application {
     primaryStage.setMinHeight(600);
     primaryStage.setTitle("CaaS - Administration");
     primaryStage.show();
+  }
+  
+  private void connectToRmiService() throws Exception{
+    try {
+      repository = (IRemoteRepository) Naming.lookup("rmi://localhost:1099/CaaSService");
+      logic = new UpdateLogic();
+      UnicastRemoteObject.exportObject(logic, 0);
+      repository.registerConsumer(logic);
+    } catch (Exception exception) {
+      MessageBox.showErrorDialog("Fehler", "Fehler beim Verbinden zum Service", "Es ist ein Fehler beim Verbinden zum RMI Service aufgetreten. Vielleicht wurde dieser nicht gestartet.", exception);
+      throw exception;
+    }
   }
   
   private Tab createOrderTab() {

@@ -2,13 +2,8 @@ package at.skert.swe.ue7.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 
-import at.skert.swe.ue7.contracts.Action;
-import at.skert.swe.ue7.contracts.ActionWithParam;
 import at.skert.swe.ue7.contracts.data.IRepository;
 import at.skert.swe.ue7.contracts.data.Menu;
 import at.skert.swe.ue7.contracts.data.MenuCategory;
@@ -19,10 +14,10 @@ public class MenuRepository extends AbstractRepository<Menu> {
   public MenuRepository(IRepository<MenuCategory> menuCategoryRepository) {
     this.menuCategoryRepository = menuCategoryRepository;
   }
-
+  
   @Override
-  protected String getGetAllStatement() {
-    return "SELECT * FROM Menus";
+  protected String getTableName(){
+    return "Menus";
   }
 
   @Override
@@ -46,16 +41,6 @@ public class MenuRepository extends AbstractRepository<Menu> {
     return new Object[] { entity.getName(), entity.getPrice(),
         entity.getCategory().getId(), entity.getBegin(), entity.getEnd(),
         entity.getId() };
-  }
-
-  @Override
-  protected String getDeleteStatement() {
-    return "DELETE FROM Menus WHERE Id = ?";
-  }
-
-  @Override
-  protected Object[] getDeleteArguments(Menu entity) {
-    return new Object[] { entity.getId() };
   }
 
   @Override

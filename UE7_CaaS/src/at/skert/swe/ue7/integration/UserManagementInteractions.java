@@ -8,8 +8,8 @@ import at.skert.swe.ue7.view.utils.MessageBox;
 import at.skert.swe.ue7.viewmodel.UserManagementViewModel;
 
 public class UserManagementInteractions {
-  UserManagementViewModel viewModel;
-  IRepository<User> userRepository;
+  private UserManagementViewModel viewModel;
+  private IRepository<User> userRepository;
 
   public UserManagementInteractions(IRepository<User> userRepository) {
     this.viewModel = new UserManagementViewModel();
@@ -22,6 +22,7 @@ public class UserManagementInteractions {
     viewModel.setDeletUserMethod(user -> deleteUser(user));
     viewModel.setDeactivateUserMethod(user -> deactivateUser(user));
     viewModel.setActivateUserMethod(user -> activateUser(user));
+    viewModel.setRefreshUsersMethod(() -> loadUsers());
     viewModel.getUserList().addAll(userRepository.getAll());
     return viewModel;
   }
@@ -32,6 +33,7 @@ public class UserManagementInteractions {
         .setAddUserMethod(user -> userRepository.create(
             user,
             () -> {
+              dialog.close();
               viewModel.getUserList().clear();
               viewModel.getUserList().addAll(userRepository.getAll());
             },
@@ -98,7 +100,10 @@ public class UserManagementInteractions {
         .setUpdateUserMethod(x -> {
           userRepository.update(
               user,
-              () -> refreshUsers(),
+              () -> {
+                refreshUsers();
+                dialog.close();
+              },
               (exception) -> {
                 MessageBox
                     .showErrorDialog(
@@ -127,9 +132,12 @@ public class UserManagementInteractions {
             });
   }
 
-  public void refreshUsers() {
+  public void loadUsers(){
     viewModel.getUserList().clear();
     viewModel.getUserList().addAll(userRepository.getAll());
   }
-
+  
+  public void refreshUsers() {
+    viewModel.refreshUses();
+  }
 }

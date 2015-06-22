@@ -13,6 +13,7 @@ public class EditUserDialog extends UserDialogBase {
   private User user;
 
   public EditUserDialog(User user) {
+    super();
     this.user = user;
     primaryStage = new Stage();
     primaryStage.setTitle("Benutzer editieren");
@@ -46,7 +47,6 @@ public class EditUserDialog extends UserDialogBase {
       user.setPassword(txtPassword.getText());
       user.setActivated(chkActive.isSelected());
       updateUserMethod.invoke(user);
-      primaryStage.close();
     });
     return btnSave;
   }

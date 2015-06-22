@@ -9,9 +9,9 @@ import at.skert.swe.ue7.view.utils.MessageBox;
 import at.skert.swe.ue7.viewmodel.MenuPlanManagementViewModel;
 
 public class MenuPlanManagementInteractions {
-  MenuPlanManagementViewModel viewModel;
-  IRepository<Menu> menuRepository;
-  IRepository<MenuCategory> menuCategoryRepository;
+  private MenuPlanManagementViewModel viewModel;
+  private IRepository<Menu> menuRepository;
+  private IRepository<MenuCategory> menuCategoryRepository;
 
   public MenuPlanManagementInteractions(IRepository<Menu> menuRepository, IRepository<MenuCategory> menuCategoryRepository) {
     this.viewModel = new MenuPlanManagementViewModel();
@@ -25,11 +25,9 @@ public class MenuPlanManagementInteractions {
     viewModel.setDeleteMenuMethod(menu -> deleteMenu(menu));
 
     viewModel.setAddMenuCategoryMethod(() -> addMenuCategory());
-    viewModel
-        .setDeleteMenuCategoryMethod(category -> deleteMenuCategory(category));
-
-    viewModel
-        .setLoadMenuForCategoryMethod(category -> loadMenuForCategory(category));
+    viewModel.setDeleteMenuCategoryMethod(category -> deleteMenuCategory(category));
+    viewModel.setLoadMenuForCategoryMethod(category -> loadMenuForCategory(category));
+    viewModel.setLoadMenuCategoriesMethod(() -> loadMenuCategories());
     return viewModel;
   }
 
@@ -38,7 +36,10 @@ public class MenuPlanManagementInteractions {
     dialog
         .setAddMenuMethod(menu -> menuRepository.create(
             menu,
-            () -> refreshMenuList(),
+            () -> {
+              refreshMenuList();
+              dialog.close();
+            },
             exception -> {
               MessageBox
                   .showErrorDialog(
@@ -77,6 +78,7 @@ public class MenuPlanManagementInteractions {
             menuCategory,
             () -> {
               refreshMenuCategoryList();
+              dialog.close();
             },
             exception -> {
               MessageBox
@@ -114,14 +116,17 @@ public class MenuPlanManagementInteractions {
     viewModel.getMenuList().clear();
     viewModel.getMenuList().addAll(menuRepository.getAllByPredicate(x -> x.getCategory().getId() == category.getId()));
   }
+  
+  public void loadMenuCategories(){
+    viewModel.getMenuCategoryList().clear();
+    viewModel.getMenuCategoryList().addAll(menuCategoryRepository.getAll());
+  }
 
   public void refreshMenuList() {
-    viewModel.getMenuList().clear();
-    viewModel.getMenuList().addAll(menuRepository.getAllByPredicate(x -> x.getCategory().getId() == viewModel.getSelectedMenuCategory().getId()));
+    viewModel.refreshMenus();
   }
 
   public void refreshMenuCategoryList() {
-    viewModel.getMenuCategoryList().clear();
-    viewModel.getMenuCategoryList().addAll(menuCategoryRepository.getAll());
+    viewModel.refreshMenuCategories();
   }
 }

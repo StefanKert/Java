@@ -131,7 +131,6 @@ public class AddMenuDialog {
       addMenuMethod.invoke(new Menu(txtName.getText(), Double.valueOf(txtPrice
           .getText().replace(',', '.')), getSelectedMenuCategory(), dateFrom
           .getValue(), dateTo.getValue()));
-      primaryStage.close();
     });
 
     return btnSave;
@@ -182,5 +181,8 @@ public class AddMenuDialog {
 
   public void setAddMenuMethod(ActionWithParam<Menu> addMenuMethod) {
     this.addMenuMethod = addMenuMethod;
+  }
+  public void close(){
+    primaryStage.close();
   }
 }

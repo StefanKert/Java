@@ -27,13 +27,14 @@ public class DataAccessProvider {
     this.password = password;
   }
 
-  private void establishConnection() throws SQLException {
+  private Connection getConnection() throws SQLException {
     if(conn == null)
       conn = DriverManager.getConnection(connectionString, username, password);
     else{
       if(conn.isClosed())
         conn = DriverManager.getConnection(connectionString, username, password);
     }
+    return conn;
   }
 
   private void closeConnection() throws SQLException {
@@ -43,7 +44,7 @@ public class DataAccessProvider {
 
   public void ExecuteQuery(String query) {
     try {
-      establishConnection();
+      Connection conn =  getConnection();
       Statement stmt = conn.createStatement();
       stmt.execute(query);
       stmt.close();
@@ -55,7 +56,7 @@ public class DataAccessProvider {
   
   public void ExecuteUpdate(String query, ActionWithParam<ResultSet> onSuccess, ActionWithParam<Exception> onFailed, Object... args){
     try {
-      establishConnection();
+      Connection conn =  getConnection();
       PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
       for (int i = 0; i < args.length; i++)
         statement.setObject(i + 1, args[i]);
@@ -72,7 +73,7 @@ public class DataAccessProvider {
   
   public void ExecuteUpdate(String query, Action onSuccess, ActionWithParam<Exception> onFailed, Object... args){
     try {
-      establishConnection();
+      Connection conn =  getConnection();
       PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
       for (int i = 0; i < args.length; i++)
         statement.setObject(i + 1, args[i]);
@@ -89,15 +90,14 @@ public class DataAccessProvider {
 
   public void ExecuteQuery(String query, ActionWithParam<ResultSet> onSuccess, ActionWithParam<Exception> onFailed, Object... args) {
     try {
-      establishConnection();
-      PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-      for (int i = 0; i < args.length; i++)
-        statement.setObject(i + 1, args[i]);
-      System.out.println(statement.toString());
-      ResultSet set = statement.executeQuery();
-      onSuccess.invoke(set);
-      set.close();
-      statement.close();
+      Connection conn =  getConnection();
+      try(PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
+        for (int i = 0; i < args.length; i++)
+          statement.setObject(i + 1, args[i]);
+        try(ResultSet set = statement.executeQuery()){
+          onSuccess.invoke(set);
+        }
+      }
       closeConnection();
     } catch (SQLException e) {
       onFailed.invoke(e);

@@ -1,4 +1,4 @@
-package at.skert.swe.ue7.view;
+package at.skert.swe.ue7.data.remote;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -14,6 +14,7 @@ public class UpdateLogic implements ICaaSConsumer, Serializable {
   
   @Override
   public void usersUpdated() throws RemoteException {
+    System.out.println("Invoking users updated");
     usersUpdatedMethod.invoke();
   }
 

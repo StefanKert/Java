@@ -2,12 +2,9 @@ package at.skert.swe.ue7.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.Random;
 
 import at.skert.swe.ue7.contracts.data.IRepository;
 import at.skert.swe.ue7.contracts.data.Menu;
-import at.skert.swe.ue7.contracts.data.MenuCategory;
 import at.skert.swe.ue7.contracts.data.Order;
 import at.skert.swe.ue7.contracts.data.User;
 
@@ -19,15 +16,15 @@ private IRepository<Menu> menuRepository;
     this.menuRepository = menuRepository;
     this.userRepository = userRepository;
   }
-
+  
   @Override
-  protected String getGetAllStatement() {
-    return "SELECT * FROM Orders";
+  protected String getTableName(){
+    return "Orders";
   }
 
   @Override
   protected String getInsertStatement() {
-    return "INSERT INTO Orders (MenuId, UserId, DateTime) VALUES (?, ?, ?)";
+    return String.format("INSERT INTO %s (MenuId, UserId, DateTime) VALUES (?, ?, ?)", getTableName());
   }
 
   @Override
@@ -37,27 +34,17 @@ private IRepository<Menu> menuRepository;
 
   @Override
   protected String getUpdateStatement() {
-    return "UPDATE Orders SET MenuId = ?, UserId = ?, DateTime = ? WHERE Id = ?";
+    return String.format("UPDATE %s SET MenuId = ?, UserId = ?, DateTime = ? WHERE Id = ?", getTableName());
   }
 
   @Override
   protected Object[] getUpdateArguments(Order entity) {
     return new Object[] {  entity.getMenu().getId(), entity.getUser().getId(), entity.getDateTime(), entity.getId() };
   }
-
-  @Override
-  protected String getDeleteStatement() {
-    return "DELETE FROM Orders WHERE Id = ?";
-  }
-
-  @Override
-  protected Object[] getDeleteArguments(Order entity) {
-    return new Object[] { entity.getId() };
-  }
-
+  
   @Override
   protected String getGetByIdStatement() {
-    return "SELECT * FROM Orders WHERE Id = ?";
+    return String.format("SELECT * FROM %s WHERE Id = ?", getTableName());
   }
 
   private Menu tempMenu;

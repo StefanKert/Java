@@ -12,6 +12,7 @@ public class AddUserDialog extends UserDialogBase {
   private ActionWithParam<User> addUserMethod;
 
   public AddUserDialog() {
+    super();
     this.primaryStage = new Stage();
     this.primaryStage.setTitle("Benutzer hinzufügen");
     this.primaryStage.initStyle(StageStyle.UTILITY);
@@ -34,7 +35,6 @@ public class AddUserDialog extends UserDialogBase {
               txtUserName.getText(), txtPassword.getText(), chkActive
                   .isSelected());
           addUserMethod.invoke(user);
-          primaryStage.close();
         });
     return btnSave;
   }
