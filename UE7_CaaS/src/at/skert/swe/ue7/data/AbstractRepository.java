@@ -21,7 +21,7 @@ public abstract class AbstractRepository<T extends IEntity> implements
 
   private static final String CONNECTION_STRING = "jdbc:mysql://localhost/CaaS";
   private static final String USERNAME = "root";
-  private static final String PASSWORD = "shtzbkhz4vz";
+  private static final String PASSWORD = "";
 
   public AbstractRepository() {
     dataAccessProvider = new DataAccessProvider(CONNECTION_STRING, USERNAME, PASSWORD);
